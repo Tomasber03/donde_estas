@@ -1,6 +1,7 @@
 package org.example.donde_estas.controller;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.example.donde_estas.model.Ubicacion;
 import org.example.donde_estas.service.UbicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,12 @@ public class UbicacionController {
     @Autowired
     private UbicacionService ubicacionService;
     @PostMapping
-    public Ubicacion create(@RequestBody Ubicacion ubicacion) {
-
+    public Ubicacion create(@Valid @RequestBody Ubicacion ubicacion) {
         return ubicacionService.persist(ubicacion);
     }
 
     @PutMapping(value = "/{id}")
-    public Ubicacion update(@RequestBody Ubicacion ubicacion, @PathVariable("id") Long ubicacionId) {
+    public Ubicacion update(@Valid @RequestBody Ubicacion ubicacion, @PathVariable("id") Long ubicacionId) {
         ubicacion.setId(ubicacionId);
         return ubicacionService.update(ubicacion);
     }
@@ -33,5 +33,9 @@ public class UbicacionController {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex) {
         return new ResponseEntity<>("Entidad no encontrada", HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        return new ResponseEntity<>("Datos de entrada inválidos", HttpStatus.BAD_REQUEST);
     }
 }
