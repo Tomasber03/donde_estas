@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.donde_estas.dto.usuario.UsuarioNuevoDTO;
 import org.example.donde_estas.model.Enum.RolPersistido;
 
 import java.util.ArrayList;
@@ -62,9 +63,22 @@ public class Usuario {
         this.telefono = telefono;
         this.barrio = barrio;
         this.ciudad = ciudad;
+        this.puntos = 0;
+        // se carga el rol con el service
+    }
+    public Usuario (UsuarioNuevoDTO dto)
+    {
+        this.nombre = dto.getNombre();
+        this.apellido = dto.getApellido();
+        this.clave = dto.getClave();
+        this.email = dto.getEmail();
+        this.telefono = dto.getTelefono();
+        this.barrio = dto.getBarrio();
+        this.ciudad = dto.getCiudad();
         this.rol = new UsuarioPublico();
         this.puntos = 0;
         this.publicaciones = new ArrayList<>();
+        this.rolPersistido = dto.getRolPersistido();
     }
 
     public Usuario() {

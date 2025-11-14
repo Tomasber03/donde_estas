@@ -1,5 +1,6 @@
 package org.example.donde_estas.controller;
 
+import org.example.donde_estas.dto.usuario.UsuarioNuevoDTO;
 import org.example.donde_estas.model.Usuario;
 import org.example.donde_estas.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioService userService;
     @PostMapping
-    public Usuario create(@RequestBody Usuario user) {
-
+    public Usuario create(@RequestBody UsuarioNuevoDTO   user) {
         return userService.persist(user);
     }
 

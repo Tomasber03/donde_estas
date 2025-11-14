@@ -15,15 +15,15 @@ public class AvistamientoService {
     @Autowired
     private EncryptService encryptService;
     @Transactional
-    public Avistamiento persist(Avistamiento avistamiento){
+    public Avistamiento persist(Avistamiento avistamiento) {
 
         return avistamientoRepo.save(avistamiento);
     }
 
-    public Avistamiento findById(Long id){
+    public Avistamiento findById(Long id) {
         return avistamientoRepo.findById(id).orElse(null);
     }
-    public List<Avistamiento> findAll(){
+    public List<Avistamiento> findAll() {
         return avistamientoRepo.findAll();
     }
 }
