@@ -3,10 +3,10 @@ package org.example.donde_estas.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.donde_estas.model.Enum.RolPersistido;
 
 import java.util.ArrayList;
 import java.util.List;

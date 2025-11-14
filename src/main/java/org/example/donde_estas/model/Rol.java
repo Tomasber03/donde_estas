@@ -1,6 +1,8 @@
 package org.example.donde_estas.model;
 
 
+import org.example.donde_estas.model.Enum.RolPersistido;
+
 public interface Rol {
     public boolean puedeCambiarRol();
     public boolean puedeEliminarUsuarios();

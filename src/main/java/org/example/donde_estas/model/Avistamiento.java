@@ -33,4 +33,7 @@ public class Avistamiento{
         this.publicacion = publicacion;
     }
 
+    public Avistamiento() {
+
+    }
 }

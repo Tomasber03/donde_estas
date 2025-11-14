@@ -3,7 +3,8 @@ package org.example.donde_estas.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDate;
+import org.example.donde_estas.model.Enum.Estado;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

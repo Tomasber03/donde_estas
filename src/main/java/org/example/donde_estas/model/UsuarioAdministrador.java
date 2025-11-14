@@ -1,5 +1,7 @@
 package org.example.donde_estas.model;
 
+import org.example.donde_estas.model.Enum.RolPersistido;
+
 public class UsuarioAdministrador implements Rol {
     @Override
     public boolean puedeCambiarRol() {

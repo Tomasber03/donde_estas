@@ -1,0 +1,109 @@
+package org.example.donde_estas.service;
+
+import jakarta.transaction.Transactional;
+import org.example.donde_estas.model.Enum.RolPersistido;
+import org.example.donde_estas.model.Rol;
+import org.example.donde_estas.model.Usuario;
+import org.example.donde_estas.model.UsuarioAdministrador;
+import org.example.donde_estas.model.UsuarioPublico;
+import org.example.donde_estas.repository.UsuarioRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class UsuarioService {
+    private UsuarioRepository usuarioRepo;
+    private EncryptService encryptService;
+    @Transactional
+    public Usuario persist(Usuario usuario){
+        usuario.setClave(encryptService.encryptPassword(usuario.getClave()));
+        usuario.setRolPersistido(usuario.getRol().getEnum());
+        usuarioRepo.save(usuario);
+
+        return cargarRol(usuarioRepo.findById(usuario.getId()).orElse(null));
+    }
+    public Usuario update(Usuario usuario) {
+        Usuario usuarioPersistido = usuarioRepo.findById(usuario.getId()).orElse(null);
+        if (usuarioPersistido == null)
+            return null;
+
+        usuarioPersistido.setNombre(usuario.getNombre());
+        usuarioPersistido.setApellido(usuario.getApellido());
+        usuarioPersistido.setEmail(usuario.getEmail());
+        usuarioPersistido.setBarrio(usuario.getBarrio());
+        usuarioPersistido.setCiudad(usuario.getCiudad());
+        usuarioPersistido.setTelefono(usuario.getTelefono());
+
+        usuarioRepo.save(usuarioPersistido);
+
+        return cargarRol(usuario);
+    }
+    public Usuario updateRol(Long id, Rol rol)
+    {
+        Usuario usuarioPersistido = usuarioRepo.findById(id).orElse(null);
+        if (usuarioPersistido == null)
+            return null;
+        usuarioPersistido.setRolPersistido(rol.getEnum());
+        usuarioRepo.save(usuarioPersistido);
+        return usuarioPersistido;
+    }
+    public Usuario addPuntos(Long id, int puntos)
+    {
+        Usuario usuarioPersistido = usuarioRepo.findById(id).orElse(null);
+        if (usuarioPersistido == null)
+            return null;
+        usuarioPersistido.setPuntos(usuarioPersistido.getPuntos() + puntos);
+        usuarioRepo.save(usuarioPersistido);
+        return usuarioPersistido;
+    }
+
+    public Usuario findById(Long id){
+        return cargarRol(usuarioRepo.findById(id).orElse(null));
+    }
+
+    public List<Usuario> findAll(){
+        List<Usuario> usuarios = usuarioRepo.findAll();
+
+        return cargarRoles(usuarios);
+    }
+    public Usuario findByEmail(String email){
+        Usuario usuario = usuarioRepo.findByEmail(email).orElse(null);
+        return cargarRol(usuario);
+    }
+    public Usuario findByEmailAndPass(String email, String pass){
+        Usuario usuario = usuarioRepo.findByEmail(email).orElse(null);
+        if (encryptService.verifyPassword(pass, usuario.getClave()))
+            return cargarRol(usuario);
+        else
+            return null;
+    }
+    public List<Usuario> getByRol(RolPersistido rol) {
+        List<Usuario> usuarios = usuarioRepo.getByRolPersistido(rol);
+        return  cargarRoles(usuarios);
+    }
+    public List<Usuario> getByPuntosAsc() {
+        List<Usuario> usuarios = usuarioRepo.findAllByOrderByPuntosAsc();
+        return cargarRoles(usuarios);
+    }
+
+    private Usuario cargarRol(Usuario usuario) {
+        if (usuario == null)
+            return usuario;
+
+        if (usuario.getRolPersistido() == RolPersistido.USUARIOPUBLICO)
+        {
+            usuario.setRol(new UsuarioPublico());
+        }
+        else{
+            usuario.setRol(new UsuarioAdministrador());
+        }
+        return usuario;
+    }
+    private List<Usuario> cargarRoles(List<Usuario> usuarios) {
+        for (Usuario u : usuarios) {
+            cargarRol(u);
+        }
+        return usuarios;
+    }
+}
