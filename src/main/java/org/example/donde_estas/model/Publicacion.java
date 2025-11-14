@@ -38,12 +38,12 @@ public class Publicacion {
     @OneToOne(cascade = CascadeType.ALL)
     private Ubicacion ubicacion;
 
-    public Publicacion(Usuario usuario, boolean estaActivo, Estado estadoInicial, LocalDateTime fechaInicial, Ubicacion ubicacion, Mascota mascota) {
+    public Publicacion(Usuario usuario, boolean estaActivo, Estado estadoInicial, Ubicacion ubicacion, Mascota mascota) {
         super();
         this.usuario = usuario;
         this.estaActivo = estaActivo;
         this.estadoInicial = estadoInicial;
-        this.fechaInicial = fechaInicial;
+        this.fechaInicial = LocalDateTime.now();
         this.ubicacion = ubicacion;
         this.mascota = mascota;
     }

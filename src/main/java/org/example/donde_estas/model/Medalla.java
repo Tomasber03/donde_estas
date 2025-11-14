@@ -1,6 +1,7 @@
 package org.example.donde_estas.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,11 @@ public class Medalla {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "El nombre de la medalla no puede estar vacío")
     private String nombre;
+
+    @NotBlank(message = "La descripción de la medalla no puede estar vacía")
     private String descripcion;
 
     public Medalla(String nombre, String descripcion) {
@@ -24,15 +29,4 @@ public class Medalla {
 
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return this.nombre;
-    }
 }

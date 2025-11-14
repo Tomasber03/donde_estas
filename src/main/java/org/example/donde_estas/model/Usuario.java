@@ -34,12 +34,19 @@ public class Usuario {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @NotBlank(message = "El telefono es obligatorio")
     private String telefono;
+
+    @NotBlank(message = "El barrio es obligatorio")
     private String barrio;
+
+    @NotBlank(message = "La ciudad es obligatoria")
     private String ciudad;
+
+    @Enumerated(EnumType.STRING)
     private RolPersistido rolPersistido;
 
-    private int puntos = 0;
+    private int puntos;
 
     @Transient
     private Rol rol;

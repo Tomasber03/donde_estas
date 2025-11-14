@@ -23,20 +23,5 @@ public class Ubicacion{
     public Ubicacion() {
 
     }
-
-    public String getCiudad() {
-        return ciudad;
-    }
-    public String getBarrio() {
-        return barrio;
-    }
-    public String getLatitud() {
-        return this.latitud;
-    }
-
-    public String getLongitud() {
-        return this.longitud;
-    }
-
-
+    
 }
