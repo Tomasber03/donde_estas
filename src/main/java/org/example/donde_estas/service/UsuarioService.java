@@ -1,12 +1,15 @@
 package org.example.donde_estas.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.example.donde_estas.dto.usuario.UsuarioNuevoDTO;
 import org.example.donde_estas.model.Enum.RolPersistido;
 import org.example.donde_estas.model.Rol;
 import org.example.donde_estas.model.Usuario;
 import org.example.donde_estas.model.UsuarioAdministrador;
 import org.example.donde_estas.model.UsuarioPublico;
 import org.example.donde_estas.repository.UsuarioRepository;
+import org.example.donde_estas.service.helper.UsuarioHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +21,20 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepo;
     @Autowired
     private EncryptService encryptService;
-    @Transactional
-    public Usuario persist(Usuario usuario){
-        usuario.setClave(encryptService.encryptPassword(usuario.getClave()));
-        usuario.setRolPersistido(usuario.getRol().getEnum());
-        usuarioRepo.save(usuario);
+    @Autowired
+    private UsuarioHelperService UsuarioHelperService;
 
-        return cargarRol(usuarioRepo.findById(usuario.getId()).orElse(null));
+    @Transactional
+    public Usuario persist(UsuarioNuevoDTO dto){
+        Usuario user = new Usuario(dto);
+        UsuarioHelperService.validarUsuarioDuplicado(user.getEmail());
+        user.setClave(encryptService.encryptPassword(user.getClave()));
+        // Asegurar rolPersistido válido para cumplir el CHECK de la BD
+        if (user.getRolPersistido() == null) {
+            user.setRolPersistido(RolPersistido.USUARIOPUBLICO);
+        }
+        usuarioRepo.save(user);
+        return cargarRol(usuarioRepo.findById(user.getId()).orElseThrow(EntityNotFoundException::new));
     }
     public Usuario update(Usuario usuario) {
         Usuario usuarioPersistido = usuarioRepo.findById(usuario.getId()).orElse(null);

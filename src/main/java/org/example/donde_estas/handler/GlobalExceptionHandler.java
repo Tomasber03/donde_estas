@@ -10,46 +10,71 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    // VALIDACIONES (DTO @Valid)
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
             HttpHeaders headers,
             HttpStatusCode status,
             WebRequest request) {
-        List<FieldError> errors = ex.getFieldErrors();
-        ValidationException validationException = new ValidationException(errors, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(validationException.toErrorResponse(),headers,status);
+
+        Map<String, String> errors = new HashMap<>();
+
+        for (FieldError error : ex.getFieldErrors()) {
+            errors.put(error.getField(), error.getDefaultMessage());
+        }
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
+    // ENTITY NOT FOUND
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex){
-        return new ResponseEntity<>(ex.getMessage(),HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> handleEntityNotFound(EntityNotFoundException ex) {
+        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.NOT_FOUND);
     }
+
+    // ENTITY EXISTS
     @ExceptionHandler(EntityExistsException.class)
-    public ResponseEntity<String> handleEntityExist(EntityExistsException ex){
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    public ResponseEntity<?> handleEntityExist(EntityExistsException ex) {
+        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.CONFLICT);
     }
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleGenericException(RuntimeException ex){
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
-    public ResponseEntity<String> handlerCredentialsNotFound(AuthenticationCredentialsNotFoundException ex){
-        return new ResponseEntity<String>("El usuario no esta autenticado no se puede obtener el email del context", HttpStatus.UNAUTHORIZED);
-    }
-    @ExceptionHandler(UncheckedIOException.class)
-    public ResponseEntity<String> ioExceptionHandler(IOException ex){
-        return new ResponseEntity<>(ex.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+
+    // BAD REQUEST (Argumentos inválidos)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> ilegalArgumentHandler(IllegalArgumentException ex){
-        return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> ilegalArgumentHandler(IllegalArgumentException ex) {
+        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    // AUTH
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    public ResponseEntity<?> handlerCredentialsNotFound(AuthenticationCredentialsNotFoundException ex) {
+        return new ResponseEntity<>(
+                Map.of("error", "El usuario no está autenticado, no se puede obtener el email del context"),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+
+    // I/O
+    @ExceptionHandler(UncheckedIOException.class)
+    public ResponseEntity<?> ioExceptionHandler(UncheckedIOException ex) {
+        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // GENERIC EXCEPTION
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handleRuntime(RuntimeException ex) {
+        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }

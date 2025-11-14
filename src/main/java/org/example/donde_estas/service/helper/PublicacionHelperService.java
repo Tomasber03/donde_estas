@@ -17,7 +17,7 @@ public class PublicacionHelperService {
     private PublicacionRepository publicacionRepository;
 
     public void validarPublicacionDuplicada(Publicacion publicacion) {
-        Optional<Publicacion> publi = publicacionRepository.findByMascota(publicacion.getMascota());
+        Optional<Publicacion> publi = publicacionRepository.findByMascota_Id(publicacion.getMascota().getId());
         if (publi.isPresent() && publi.get().isActivo()) {
             throw new EntityExistsException("La mascota ya tiene una publicacion activa");
         }

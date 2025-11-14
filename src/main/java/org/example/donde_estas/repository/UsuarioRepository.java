@@ -14,4 +14,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     List<Usuario> getByRolPersistido(RolPersistido rol);
 
     List<Usuario> findAllByOrderByPuntosAsc();
+
+    boolean existsByEmail(String email);
 }

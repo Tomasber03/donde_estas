@@ -14,16 +14,16 @@ public class MedallaService {
     @Autowired
     private EncryptService encryptService;
     @Transactional
-    public Medalla persist(Medalla medalla){
+    public Medalla persist(Medalla medalla) {
 
         return medallaRepo.save(medalla);
     }
 
-    public Medalla findById(Long id){
+    public Medalla findById(Long id) {
         return medallaRepo.findById(id).orElse(null);
     }
 
-    public List<Medalla> findAll(){
+    public List<Medalla> findAll() {
         return medallaRepo.findAll();
     }
 }
