@@ -7,13 +7,16 @@ import org.example.donde_estas.model.Usuario;
 import org.example.donde_estas.model.UsuarioAdministrador;
 import org.example.donde_estas.model.UsuarioPublico;
 import org.example.donde_estas.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class UsuarioService {
+    @Autowired
     private UsuarioRepository usuarioRepo;
+    @Autowired
     private EncryptService encryptService;
     @Transactional
     public Usuario persist(Usuario usuario){
