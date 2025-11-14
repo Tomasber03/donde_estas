@@ -2,8 +2,8 @@ package org.example.donde_estas.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.example.donde_estas.model.Mascota;
-import org.example.donde_estas.service.MascotaService;
+import org.example.donde_estas.model.Ubicacion;
+import org.example.donde_estas.service.UbicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,23 +11,23 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/mascota")
-public class MascotaController {
+@RequestMapping("/ubicacion")
+public class UbicacionController {
     @Autowired
-    private MascotaService mascotaService;
+    private UbicacionService ubicacionService;
     @PostMapping
-    public Mascota create(@Valid @RequestBody Mascota user) {
-        return mascotaService.persist(user);
+    public Ubicacion create(@Valid @RequestBody Ubicacion ubicacion) {
+        return ubicacionService.persist(ubicacion);
     }
 
     @PutMapping(value = "/{id}")
-    public Mascota update(@Valid @RequestBody Mascota user, @PathVariable("id") Long userId) {
-        user.setId(userId);
-        return mascotaService.update(user);
+    public Ubicacion update(@Valid @RequestBody Ubicacion ubicacion, @PathVariable("id") Long ubicacionId) {
+        ubicacion.setId(ubicacionId);
+        return ubicacionService.update(ubicacion);
     }
     @GetMapping(value = "/{id}")
-    public Mascota get(@PathVariable("id") Long userId) {
-        return mascotaService.findById(userId);
+    public Ubicacion get(@PathVariable("id") Long ubicacionId) {
+        return ubicacionService.findById(ubicacionId);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

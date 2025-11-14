@@ -1,5 +1,6 @@
 package org.example.donde_estas.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.example.donde_estas.model.Enum.RolPersistido;
 import org.example.donde_estas.model.Rol;
@@ -22,9 +23,7 @@ public class MascotaService {
         return mascotaRepo.save(mascota);
     }
     public Mascota update(Mascota mascota) {
-        Mascota mascotaPersistido = mascotaRepo.findById(mascota.getId()).orElse(null);
-        if (mascotaPersistido == null)
-            return null;
+        Mascota mascotaPersistido = mascotaRepo.findById(mascota.getId()).orElseThrow(EntityNotFoundException::new);
 
         mascotaPersistido.setNombre(mascota.getNombre());
         mascotaPersistido.setTipo(mascota.getTipo());
@@ -35,7 +34,7 @@ public class MascotaService {
     }
 
     public Mascota findById(Long id){
-        return mascotaRepo.findById(id).orElse(null);
+        return mascotaRepo.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     public List<Mascota> findAll(){
@@ -47,6 +46,6 @@ public class MascotaService {
     }
     public List<Mascota> findByTipo(String tipo){
         return  mascotaRepo.findByTipo(tipo);
-
     }
+
 }
