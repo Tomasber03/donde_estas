@@ -19,18 +19,18 @@ public class Publicacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "mascota_id")
     private Mascota mascota;
 
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Avistamiento> avistamientos;
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-
-    private boolean activo;
+    @Column(name = "estaActivo")
+    private boolean activo = true;
     private Estado estadoInicial;
     private Estado estadoCierre;
     private LocalDateTime fechaInicial;
