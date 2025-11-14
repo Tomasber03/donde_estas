@@ -20,6 +20,7 @@ public class Mascota {
     private String raza;
     private String color;
     private String tamano;
+    private String tipo;
 
     public Mascota(String nombre, String raza, String color, String tamano) {
         this.nombre = nombre;
