@@ -1,6 +1,10 @@
 package org.example.donde_estas.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,13 +20,18 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
+    @NotBlank(message = "El apellido es obligatorio")
     private String apellido;
 
+    @Column(nullable = false)
+    @Size(min = 8, message = "La clave debe tener al menos 8 caracteres")
     private String clave;
 
-    @Column(unique = true)
+    @Email(message = "Ingresa un email valido")
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String telefono;

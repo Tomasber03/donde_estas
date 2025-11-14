@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Getter
 @Setter
@@ -25,15 +24,13 @@ public class Avistamiento{
     @ManyToOne
     @JoinColumn(name = "publicacion_id")
     private Publicacion publicacion;
-
-    public Publicacion getPublicacion() {
-        return publicacion;
-    }
-
-    public void setPublicacion(Publicacion publicacion) {
+    public Avistamiento(String comentario, String foto, Usuario usuario, Ubicacion ubicacion, Publicacion publicacion) {
+        this.comentario = comentario;
+        this.foto = foto;
+        this.fechaCreacion = LocalDateTime.now();
+        this.usuario = usuario;
+        this.ubicacion = ubicacion;
         this.publicacion = publicacion;
     }
-    // private Foto ?
-
 
 }
