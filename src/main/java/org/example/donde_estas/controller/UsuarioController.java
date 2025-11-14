@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
     @Autowired
     private UsuarioService userService;
-    @PostMapping
+    @PostMapping("/crear")
     public Usuario create(@RequestBody Usuario user) {
 
         return userService.persist(user);
