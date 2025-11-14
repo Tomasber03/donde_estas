@@ -16,31 +16,7 @@ public class Mascota {
     private String raza;
     private String color;
     private String tamano;
-
-    public String getNombre() {
-        return nombre;
-    }
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-    public String getRaza() {
-        return raza;
-    }
-    public void setRaza(String raza) {
-        this.raza = raza;
-    }
-    public String getColor() {
-        return color;
-    }
-    public void setColor(String color) {
-        this.color = color;
-    }
-    public String getTamano() {
-        return tamano;
-    }
-    public void setTamano(String tamano) {
-        this.tamano = tamano;
-    }
+    private String tipo;
 
     public Mascota(String nombre, String raza, String color, String tamano) {
         this.nombre = nombre;
@@ -49,10 +25,5 @@ public class Mascota {
         this.tamano = tamano;
     }
     public Mascota() {
-    }
-
-
-    public Long getId() {
-        return this.id;
     }
 }
