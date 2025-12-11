@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService, User } from '../../services/UserService.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-users',
@@ -16,7 +17,7 @@ import { UserService, User } from '../../services/UserService.service';
 })
 
 export class RegisterComponent {
-
+  private router = inject(Router);
   users: User[] = [];
   form: Partial<User> = { nombre: '', apellido: '', clave: '', email: '', telefono: '', barrio: '', ciudad: '', rolPersistido: 'USUARIOPUBLICO' };
   errorMessage = '';
@@ -28,9 +29,13 @@ export class RegisterComponent {
       next: () => {
         this.resetForm();
         this.errorMessage = '';
+        this.router.navigate(['/']);
       },
-      error: () => {
-        this.errorMessage = 'Error al guardar el héroe';
+      error: (error) => {
+        this.errorMessage = error.toString();
+
+        console.error('Error during registration:', error.error);
+        console.log(this.errorMessage);
       }
     });
   } 

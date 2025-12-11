@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
 export interface User {id: number; nombre: string; apellido: string; clave: string; email: string; telefono: string; barrio: string; ciudad: string; rolPersistido: string;}
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private apiUrl = 'api/users';
+  private apiUrl = 'http://localhost:8080/user';
   constructor(private http: HttpClient) {} 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl).pipe(
@@ -26,9 +26,8 @@ export class UserService {
     );
   }
   addUser(user: Partial<User>): Observable<User> {
-    return this.http.post<User>(this.apiUrl, user).pipe(
+    return this.http.post<User>(this.apiUrl + "/crear", user).pipe(
       catchError(error => {
-        console.error('Error adding user:', error);
         return throwError(() => error);
       })
     );
