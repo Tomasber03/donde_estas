@@ -181,6 +181,7 @@
     }
   }
 </style>
-
-
+@if (router.url != '/register' && router.url != '/login') {
+  <app-navbar></app-navbar>
+}
 <router-outlet />
