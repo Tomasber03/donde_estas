@@ -27,6 +27,7 @@ public class UsuarioService {
     @Transactional
     public Usuario persist(UsuarioNuevoDTO dto){
         Usuario user = new Usuario(dto);
+        UsuarioHelperService.validarClaveDeOchoCaracteres(user.getClave());
         UsuarioHelperService.validarUsuarioDuplicado(user.getEmail());
         user.setClave(encryptService.encryptPassword(user.getClave()));
         // Asegurar rolPersistido válido para cumplir el CHECK de la BD

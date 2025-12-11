@@ -18,4 +18,9 @@ public class UsuarioHelperService {
             throw new EntityExistsException("El usuario con email " + email + " ya existe");
         }
     }
+    public void  validarClaveDeOchoCaracteres(String clave){
+        if(clave.length()<8){
+            throw new IllegalArgumentException("La clave debe tener al menos 8 caracteres");
+        }
+    }
 }

@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService, User } from '../../services/UserService.service';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-users',
@@ -18,10 +19,9 @@ import { Router } from '@angular/router';
 
 export class RegisterComponent {
   private router = inject(Router);
-  users: User[] = [];
   form: Partial<User> = { nombre: '', apellido: '', clave: '', email: '', telefono: '', barrio: '', ciudad: '', rolPersistido: 'USUARIOPUBLICO' };
   errorMessage = '';
-  constructor(private service: UserService) {
+  constructor(private service: UserService, private cdr: ChangeDetectorRef) {
   }
   save() {
     const request = this.service.addUser(this.form);
@@ -31,19 +31,20 @@ export class RegisterComponent {
         this.errorMessage = '';
         this.router.navigate(['/']);
       },
-      error: (error) => {
-        this.errorMessage = error.toString();
+      error: (error: HttpErrorResponse) => {
 
-        console.error('Error during registration:', error.error);
-        console.log(this.errorMessage);
+        this.errorMessage = error.error.error; 
+        this.cdr.detectChanges();
       }
     });
   } 
-  
-  cancel() {
-    this.resetForm();
-    this.errorMessage = '';
+ 
+  onFormChange() {
+    if (this.errorMessage) {
+      this.errorMessage = '';
+    }
   }
+  
   private resetForm() {
     this.form = { nombre: '', apellido: '', clave: '', email: '', telefono: '', barrio: '', ciudad: ''};
   }
