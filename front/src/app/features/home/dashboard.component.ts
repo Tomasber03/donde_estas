@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent {
   stringBusqueda: string = '';
+  tipo: string = 'todos';
   // Datos simulados basados en la imagen
   filterPets(): void{
     if (!this.stringBusqueda) {
@@ -24,6 +25,20 @@ export class DashboardComponent {
       pet.breed.toLowerCase().startsWith(lowerSearch) ||
       pet.location.toLowerCase().startsWith(lowerSearch)
     );
+    this.filterType();
+  }
+  filterType(): void {
+    if (this.tipo === 'todos') {
+      return;
+    } 
+    else if (this.tipo === 'otro')
+    {
+      this.filteredPetsList = this.filteredPetsList.filter(pet => pet.type.toLowerCase() !== 'perro' && pet.type.toLowerCase() !== 'gato');
+    }
+    else
+    {
+      this.filteredPetsList = this.filteredPetsList.filter(pet => pet.type.toLowerCase() === this.tipo.toLowerCase());
+    }
   }
   
   pets: Pet[] = [
@@ -59,6 +74,17 @@ export class DashboardComponent {
       imageUrl: 'https://images.unsplash.com/photo-1563889958749-6bb433e7eb89?auto=format&fit=crop&q=80&w=800', // Foto de Husky
       statusTag: 'Perdido Propio'
     }
+    ,
+    {
+      id: 4,
+      name: 'Max',
+      type: 'Gato',
+      breed: 'Siames',
+      location: 'Caballito, CABA',
+      date: '25/9/2025',
+      imageUrl: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&q=80&w=800', // Foto de Gato Siames
+      statusTag: 'Perdido Ajeno' 
+    },
   ];
   filteredPetsList: Pet[] = this.pets;
   tabs = [
