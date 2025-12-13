@@ -27,6 +27,7 @@ public class Publicacion {
     private List<Avistamiento> avistamientos;
     @ManyToOne
     @JoinColumn(name = "usuario_id")
+    @com.fasterxml.jackson.annotation.JsonBackReference
     private Usuario usuario;
 
     @Column(name = "estaActivo")

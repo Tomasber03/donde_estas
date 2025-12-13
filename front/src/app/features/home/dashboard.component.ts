@@ -1,20 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PetCardComponent } from './pet-card.component';
 import { Pet } from './pet.model';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/UserService.service';
 
+
+interface User { id: number; nombre: string; apellido: string; clave: string; email: string; telefono: string; barrio: string; ciudad: string; rolPersistido: string;}
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, FormsModule, PetCardComponent],
   templateUrl: './dashboard.component.html',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   stringBusqueda: string = '';
   tipo: string = 'todos';
+  selectedTab: string = 'Perdido Propio';
+  user : User = { id: 0, nombre: '', apellido: '', clave: '', email: '', telefono: '', barrio: '', ciudad: '', rolPersistido: ''};
   // Datos simulados basados en la imagen
+  userService = inject(UserService);
+  ngOnInit(): void {
+    this.userService.getUser(2).subscribe({next : (data) => { this.user = data; }});
+    console.log(this.user)
+    this.filterPets();
+  }
   filterPets(): void{
     if (!this.stringBusqueda) {
       this.filteredPetsList = this.pets;
@@ -26,6 +37,7 @@ export class DashboardComponent {
       pet.location.toLowerCase().startsWith(lowerSearch)
     );
     this.filterType();
+    this.filterByStatus(this.selectedTab)
   }
   filterType(): void {
     if (this.tipo === 'todos') {
@@ -88,9 +100,17 @@ export class DashboardComponent {
   ];
   filteredPetsList: Pet[] = this.pets;
   tabs = [
-    { label: 'Perdido Propio', count: 3, active: true },
-    { label: 'Perdido Ajeno', count: 1, active: false },
-    { label: 'Recuperado', count: 1, active: false },
-    { label: 'Adoptado', count: 1, active: false },
+    { label: 'Perdido Propio', count: 3},
+    { label: 'Perdido Ajeno', count: 1},
+    { label: 'Recuperado', count: 0},
+    { label: 'Adoptado', count: 0},
   ];
+  onTabClick(selectedTab: any): void {
+    this.selectedTab = selectedTab.label;
+    this.filterPets();
+  }
+
+  filterByStatus(status: string): void {
+    this.filteredPetsList = this.filteredPetsList.filter(pet => pet.statusTag === status);
+  }
 }

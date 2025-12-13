@@ -5,7 +5,7 @@ import org.example.donde_estas.model.Usuario;
 import org.example.donde_estas.service.AvistamientoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/avistamiento")
 public class AvistamientoController {

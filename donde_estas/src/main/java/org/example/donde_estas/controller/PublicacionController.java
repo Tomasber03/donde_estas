@@ -2,6 +2,8 @@ package org.example.donde_estas.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+
+import org.example.donde_estas.dto.publicacion.PublicacionDTO;
 import org.example.donde_estas.dto.publicacion.PublicacionModificadaDTO;
 import org.example.donde_estas.model.Publicacion;
 import org.example.donde_estas.service.PublicacionService;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/publicacion")
 public class PublicacionController {
@@ -25,8 +27,8 @@ public class PublicacionController {
     }
 
     @GetMapping("/{id}")
-    public Publicacion get(@PathVariable("id") Long id) {
-        return publicacionService.findById(id);
+    public PublicacionDTO get(@PathVariable("id") Long id) {
+        return new PublicacionDTO(publicacionService.findById(id));
     }
 
     @GetMapping

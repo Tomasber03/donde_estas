@@ -29,9 +29,9 @@
 
         <section>
           <div class="flex flex-wrap gap-2 bg-gray-200/50 p-1 rounded-xl w-fit">
-            <button *ngFor="let tab of tabs" 
+            <button *ngFor="let tab of tabs" (click)="onTabClick(tab)"
                     class="px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200"
-                    [ngClass]="tab.active ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:bg-gray-200/50'">
+                    [ngClass]="tab.label === selectedTab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:bg-gray-200/50'">
               {{ tab.label }} ({{ tab.count }})
             </button>
           </div>

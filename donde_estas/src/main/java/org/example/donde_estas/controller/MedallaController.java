@@ -4,7 +4,7 @@ import org.example.donde_estas.model.Medalla;
 import org.example.donde_estas.service.MedallaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/medal")
 public class MedallaController {

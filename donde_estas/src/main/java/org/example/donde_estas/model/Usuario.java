@@ -55,6 +55,7 @@ public class Usuario {
     private Rol rol;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonManagedReference
     private List<Publicacion> publicaciones = new ArrayList<>();
 
     public Usuario(String nombre, String apellido, String clave, String email, String telefono, String barrio, String ciudad) {
@@ -90,6 +91,22 @@ public class Usuario {
 
     public void agregarPublicacion(Publicacion pub){
         this.publicaciones.add(pub);
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", clave='" + clave + '\'' +
+                ", email='" + email + '\'' +
+                ", telefono='" + telefono + '\'' +
+                ", barrio='" + barrio + '\'' +
+                ", ciudad='" + ciudad + '\'' +
+                ", rolPersistido=" + rolPersistido +
+                ", puntos=" + puntos +
+                '}';
     }
 
 }
