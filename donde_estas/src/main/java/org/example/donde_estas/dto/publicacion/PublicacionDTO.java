@@ -41,6 +41,8 @@ public class PublicacionDTO {
         this.ubicacion = pub.getUbicacion();
 
     }
+    public PublicacionDTO() {
+    }
 
     // getters/setters o Lombok
 }

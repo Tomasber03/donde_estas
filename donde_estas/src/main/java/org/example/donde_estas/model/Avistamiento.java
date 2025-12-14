@@ -1,8 +1,11 @@
 package org.example.donde_estas.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.donde_estas.dto.avistamiento.AvistamientoDTO;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,10 +20,13 @@ public class Avistamiento{
     private String foto; // URL o path de la foto
     private LocalDateTime fechaCreacion;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     private Ubicacion ubicacion;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "publicacion_id")
     private Publicacion publicacion;
@@ -31,6 +37,11 @@ public class Avistamiento{
         this.usuario = usuario;
         this.ubicacion = ubicacion;
         this.publicacion = publicacion;
+    }
+    public Avistamiento(AvistamientoDTO dto) {
+        this.comentario = dto.getComentario();
+        this.foto = dto.getFoto();
+        this.fechaCreacion = dto.getFechaCreacion();
     }
 
     public Avistamiento() {

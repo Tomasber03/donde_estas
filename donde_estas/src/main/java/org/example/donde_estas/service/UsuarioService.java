@@ -73,7 +73,7 @@ public class UsuarioService {
     }
 
     public Usuario findById(Long id){
-        return cargarRol(usuarioRepo.findById(id).orElse(null));
+        return cargarRol(usuarioRepo.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 
     public List<Usuario> findAll(){

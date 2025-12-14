@@ -3,6 +3,7 @@ package org.example.donde_estas.controller;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
+import org.apache.coyote.Response;
 import org.example.donde_estas.dto.publicacion.PublicacionDTO;
 import org.example.donde_estas.dto.publicacion.PublicacionModificadaDTO;
 import org.example.donde_estas.model.Publicacion;
@@ -22,8 +23,8 @@ public class PublicacionController {
     private PublicacionService publicacionService;
 
     @PostMapping
-    public Publicacion create(@Valid @RequestBody Publicacion publicacion) {
-        return publicacionService.persist(publicacion);
+    public ResponseEntity<?> create(@RequestBody PublicacionDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(publicacionService.persist(dto));
     }
 
     @GetMapping("/{id}")

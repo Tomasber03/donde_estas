@@ -1,6 +1,7 @@
 package org.example.donde_estas.service;
 
 import jakarta.transaction.Transactional;
+import org.example.donde_estas.dto.avistamiento.AvistamientoDTO;
 import org.example.donde_estas.model.Avistamiento;
 import org.example.donde_estas.repository.AvistamientoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,8 @@ public class AvistamientoService {
     @Autowired
     private EncryptService encryptService;
     @Transactional
-    public Avistamiento persist(Avistamiento avistamiento) {
-
+    public Avistamiento persist(AvistamientoDTO dto) {
+        Avistamiento avistamiento = new Avistamiento(dto);
         return avistamientoRepo.save(avistamiento);
     }
 
