@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
   selectedTab: string = 'Perdido Propio';
   user : User = { id: 0, nombre: '', apellido: '', clave: '', email: '', telefono: '', barrio: '', ciudad: '', rolPersistido: ''};
   // Datos simulados basados en la imagen
-  userService = inject(UserService);
+  constructor (private router: Router, private userService: UserService) {}
   ngOnInit(): void {
     this.userService.getUser(2).subscribe({next : (data) => { this.user = data; }});
     console.log(this.user)
@@ -113,4 +113,5 @@ export class DashboardComponent implements OnInit {
   filterByStatus(status: string): void {
     this.filteredPetsList = this.filteredPetsList.filter(pet => pet.statusTag === status);
   }
+  
 }

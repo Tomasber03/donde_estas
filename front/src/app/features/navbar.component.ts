@@ -12,6 +12,5 @@ export class NavbarComponent {
     { label: 'Inicio', active: true },
     { label: 'Reportar Mascota', active: false },
     { label: 'Mis Reportes', active: false },
-    { label: 'Ranking', active: false }
   ];
 }

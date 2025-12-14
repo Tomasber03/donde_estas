@@ -21,9 +21,6 @@
                   <option value="otro">Otros</option>
                 </select>
              </div>
-             <div class="md:col-span-3 relative">
-                <select class="block w-full pl-3 pr-10 py-3 border-none rounded-lg bg-gray-50 text-gray-700 focus:outline-none appearance-none cursor-pointer"><option>Todos los estados</option></select>
-             </div>
           </div>
         </section>
 
@@ -38,7 +35,7 @@
         </section>
 
         <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <app-pet-card *ngFor="let pet of filteredPetsList" [pet]="pet"></app-pet-card>
+          <app-pet-card  *ngFor="let pet of filteredPetsList"  [pet]="pet"></app-pet-card>
         </section>
 
       </main>

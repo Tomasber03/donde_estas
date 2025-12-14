@@ -41,7 +41,7 @@ public class PublicacionService {
         y se devuelven, sino se crean nuevos. xde (estuve 2 horas con esto lpm)
      */
     @Transactional
-    public Publicacion persist(PublicacionDTO dto) {
+    public PublicacionDTO persist(PublicacionDTO dto) {
         Publicacion publicacionNueva = new Publicacion(dto);
         if (dto.getUbicacion() == null || dto.getUbicacion().getId() == null) {
             publicacionNueva.setUbicacion(dto.getUbicacion());
@@ -66,7 +66,7 @@ public class PublicacionService {
             publicacionNueva.setUsuario(usuarioPersistido);
         }
         publicacionHelperService.validarPublicacionDuplicada(publicacionNueva);
-        return publicacionRepository.save(publicacionNueva);
+        return new PublicacionDTO(publicacionRepository.save(publicacionNueva));
     }
 
     @Transactional

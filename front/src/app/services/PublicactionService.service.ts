@@ -3,7 +3,40 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-export interface Publicacion {id: number; nombre: string; apellido: string; clave: string; email: string; telefono: string; barrio: string; ciudad: string; rolPersistido: string;}
+/*
+ejemplo de publicacion 
+[
+  {
+    "id": 1,
+    "mascota": {
+      "id": 1,
+      "nombre": "",
+      "raza": "",
+      "color": "",
+      "tamano": "",
+      "tipo": ""
+    },
+    "avistamientos": [],
+    "activo": true,
+    "estadoInicial": "PERDIDO_PROPIO",
+    "estadoCierre": "RECUPERADO",
+    "fechaInicial": "2025-11-14T17:15:00",
+    "fechaModificacion": "2025-11-14T17:15:00",
+    "ubicacion": {
+      "id": 1,
+      "ciudad": "dfgdg",
+      "barrio": "dfgdg",
+      "latitud": "-34.6037",
+      "longitud": "-58.3816"
+    },
+    "descripcion": "Mascota perdida cerca del parque."
+  }
+]
+*/
+export interface Mascota {id: number; nombre: string; raza: string; color: string; tamano: string; tipo: string;}
+export interface Ubicacion {id: number; ciudad: string; barrio: string; latitud: string; longitud: string;}
+
+export interface Publicacion {id: number; mascota: Mascota; avistamientos: any[]; activo: boolean; estadoInicial: string; estadoCierre: string; fechaInicial: string; fechaModificacion: string; ubicacion: Ubicacion; descripcion: string;}
 @Injectable({ providedIn: 'root' })
 export class PublicacionService {
   private apiUrl = 'http://localhost:8080/publicacion';

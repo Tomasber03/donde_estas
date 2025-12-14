@@ -1,13 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Pet } from './pet.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pet-card',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 h-full flex flex-col">
+    <div (click)="onPetClick(this.pet)" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 h-full flex flex-col">
       <div class="relative h-64 w-full">
         <img [src]="pet.imageUrl" [alt]="pet.name" class="w-full h-full object-cover">
         <span class="absolute top-4 right-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
@@ -50,4 +51,7 @@ import { Pet } from './pet.model';
 })
 export class PetCardComponent {
   @Input() pet!: Pet;
+  constructor (private router: Router) {}
+  onPetClick(pet: Pet): void {
+    this.router.navigate(['/register', pet.id]);}
 }
