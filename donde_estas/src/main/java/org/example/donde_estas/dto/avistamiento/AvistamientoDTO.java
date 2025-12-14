@@ -1,11 +1,13 @@
 package org.example.donde_estas.dto.avistamiento;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.donde_estas.model.Avistamiento;
+import org.example.donde_estas.model.Ubicacion;
 
 import java.time.LocalDateTime;
-
+@Data
 @Getter
 @Setter
 public class AvistamientoDTO {
@@ -13,7 +15,7 @@ public class AvistamientoDTO {
     private String comentario;
     private String foto; // URL o path de la foto
     private Long usuarioId;
-    private Long ubicacionId;
+    private Ubicacion ubicacion;
     private Long publicacionId;
 
     public AvistamientoDTO() {}
@@ -25,9 +27,7 @@ public class AvistamientoDTO {
         if (avistamiento.getUsuario() != null) {
             this.usuarioId = avistamiento.getUsuario().getId();
         }
-        if (avistamiento.getUbicacion() != null) {
-            this.ubicacionId = avistamiento.getUbicacion().getId();
-        }
+        this.ubicacion = avistamiento.getUbicacion();
         if (avistamiento.getPublicacion() != null) {
             this.publicacionId = avistamiento.getPublicacion().getId();
         }

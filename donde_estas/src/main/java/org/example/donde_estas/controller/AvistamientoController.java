@@ -20,6 +20,8 @@ public class AvistamientoController {
     }
 
     @GetMapping(value = "/{id}")
-    public Avistamiento get(@PathVariable("id") Long avistamientoId) {return avistamientoService.findById(avistamientoId);
+    public ResponseEntity<AvistamientoDTO> get(@PathVariable("id") Long avistamientoId) {
+        AvistamientoDTO dto = new AvistamientoDTO(avistamientoService.findById(avistamientoId));
+        return ResponseEntity.ok().body(dto);
     }
 }

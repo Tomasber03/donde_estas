@@ -44,14 +44,22 @@ public class PublicacionService {
     @Transactional
     public PublicacionDTO persist(PublicacionDTO dto) {
         Publicacion publicacionNueva = new Publicacion(dto);
-        if (dto.getUbicacion() == null || dto.getUbicacion().getId() == null) {
+        if (dto.getUbicacion() == null)
+        {
+            throw new EntityNotFoundException("La ubicacion es obligatoria");
+        }
+        if (dto.getUbicacion().getId() == null) {
             publicacionNueva.setUbicacion(dto.getUbicacion());
         }
         else {
             Ubicacion ubicacionPersistida = ubicacionService.findById(dto.getUbicacion().getId());
             publicacionNueva.setUbicacion(ubicacionPersistida);
         }
-        if (dto.getMascota() == null || dto.getMascota().getId() == null) {
+        if (dto.getMascota() == null)
+        {
+            throw new EntityNotFoundException("La mascota es obligatoria");
+        }
+        if (dto.getMascota().getId() == null) {
             publicacionNueva.setMascota(dto.getMascota());
         }
         else

@@ -23,8 +23,7 @@ public class Avistamiento{
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Ubicacion ubicacion;
     @JsonIgnore
     @ManyToOne

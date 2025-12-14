@@ -29,7 +29,6 @@ public class PublicacionHelperService {
             throw new EntityNotFoundException("La publicacion no existe");
         }
     }
-
     public Publicacion getPublicacionMascota(Long idMascota) {
         Publicacion publicacion = publicacionRepository.findByMascota_Id(idMascota)
                 .orElseThrow(() -> new EntityNotFoundException("No existe una publicacion para la mascota con id: " + idMascota));
