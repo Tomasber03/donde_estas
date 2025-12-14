@@ -28,11 +28,12 @@ public class PublicacionService {
     @Autowired
     private UbicacionService ubicacionService;
 
-    public List<Publicacion> findAll() {
-        return publicacionRepository.findAll();
+    public List<PublicacionDTO> findAll() {
+        // cast into list of dtos
+        return publicacionRepository.findAll().stream().map(p -> new PublicacionDTO(p)).toList();
     }
-    public Publicacion findById(Long id) {
-        return publicacionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public PublicacionDTO findById(Long id) {
+        return new PublicacionDTO(publicacionRepository.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 
     /*

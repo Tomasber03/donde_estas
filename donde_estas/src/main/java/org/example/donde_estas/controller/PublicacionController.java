@@ -28,29 +28,29 @@ public class PublicacionController {
     }
 
     @GetMapping("/{id}")
-    public PublicacionDTO get(@PathVariable("id") Long id) {
-        return new PublicacionDTO(publicacionService.findById(id));
+    public ResponseEntity<PublicacionDTO> get(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(publicacionService.findById(id));
     }
 
     @GetMapping
-    public List<Publicacion> list() {
-        return publicacionService.findAll();
+    public ResponseEntity<List<PublicacionDTO>> list() {
+        return ResponseEntity.ok().body(publicacionService.findAll());
     }
 
     @PutMapping("/{id}")
-    public Publicacion update(@PathVariable("id") Long id, @Valid @RequestBody PublicacionModificadaDTO dto) {
-        return publicacionService.update(dto);
+    public ResponseEntity<?> update(@PathVariable("id") Long id, @Valid @RequestBody PublicacionModificadaDTO dto) {
+        return ResponseEntity.status(HttpStatus.OK).body(publicacionService.update(dto));
     }
 
     // Acciones de negocio
     @PostMapping("/{id}/recuperado")
-    public Publicacion marcarRecuperado(@PathVariable("id") Long id) {
-        return publicacionService.recuperado(id);
+    public ResponseEntity<?> marcarRecuperado(@PathVariable("id") Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(publicacionService.recuperado(id));
     }
 
     @PostMapping("/{id}/adoptado")
-    public Publicacion marcarAdoptado(@PathVariable("id") Long id) {
-        return publicacionService.adoptado(id);
+    public ResponseEntity<?> marcarAdoptado(@PathVariable("id") Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(publicacionService.adoptado(id));
     }
 
 
