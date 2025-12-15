@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div (click)="onPetClick(this.pet)" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 h-full flex flex-col">
+    <div (click)="onPetClick(this.pet)" style="cursor: pointer;" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 h-full flex flex-col">
       <div class="relative h-64 w-full">
         <img [src]="pet.imageUrl" [alt]="pet.name" class="w-full h-full object-cover">
         <span class="absolute top-4 right-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
@@ -53,5 +53,5 @@ export class PetCardComponent {
   @Input() pet!: Pet;
   constructor (private router: Router) {}
   onPetClick(pet: Pet): void {
-    this.router.navigate(['/register', pet.id]);}
+    this.router.navigate(['/publicacion', pet.id]);}
 }
