@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.example.donde_estas.dto.avistamiento.AvistamientoDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,6 +30,10 @@ public class Avistamiento{
     @ManyToOne
     @JoinColumn(name = "publicacion_id")
     private Publicacion publicacion;
+
+    @OneToMany(mappedBy = "avistamiento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Foto> fotos;
+
     public Avistamiento(String comentario, String foto, Usuario usuario, Ubicacion ubicacion, Publicacion publicacion) {
         this.comentario = comentario;
         this.foto = foto;
