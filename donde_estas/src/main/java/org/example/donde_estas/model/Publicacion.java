@@ -25,10 +25,10 @@ public class Publicacion {
     private Mascota mascota;
 
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Avistamiento> avistamientos;
+    private List<Avistamiento> avistamientos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Foto> fotos;
+    @OneToMany(mappedBy = "publicacion", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<Foto> fotos = new ArrayList<>();
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "usuario_id")
@@ -67,6 +67,7 @@ public class Publicacion {
         this.mascota = dto.getMascota();
         this.ubicacion = dto.getUbicacion();
         this.usuario = null;
+        this.fotos = dto.getFotos();
     }
 
     public Publicacion(){

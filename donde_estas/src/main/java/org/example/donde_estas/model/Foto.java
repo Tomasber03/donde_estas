@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.donde_estas.dto.avistamiento.AvistamientoDTO;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +16,7 @@ public class Foto{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String url;
+    private String descripcion;
     private LocalDateTime fechaCreacion;
     private boolean esDePublicacion;
     @JsonIgnore
@@ -25,11 +25,12 @@ public class Foto{
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Avistamiento avistamiento;
-    
 
-    public Foto(String url) {
+
+    public Foto(String url, boolean esDePublicacion) {
         this.url = url;
         this.fechaCreacion = LocalDateTime.now();
+        this.esDePublicacion = esDePublicacion;
     }
     public Foto() {
     }

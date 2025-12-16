@@ -1,5 +1,6 @@
 package org.example.donde_estas.dto.publicacion;
 
+import org.example.donde_estas.model.Foto;
 import org.example.donde_estas.model.Mascota;
 import org.example.donde_estas.model.Publicacion;
 import org.example.donde_estas.model.Ubicacion;
@@ -10,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 @Data
 @Getter
 @Setter
@@ -25,6 +27,7 @@ public class PublicacionDTO {
     private Ubicacion ubicacion;
     private String descripcion;
     private Long usuarioId;
+    private List<Foto> fotos;
 
     // si querés, datos “resumidos” de mascota y ubicación, pero no el usuario
 
@@ -39,6 +42,7 @@ public class PublicacionDTO {
         this.usuarioId = pub.getUsuario() != null ? pub.getUsuario().getId() : null;
         this.mascota = pub.getMascota();
         this.ubicacion = pub.getUbicacion();
+        this.fotos = pub.getFotos();
 
     }
     public PublicacionDTO() {

@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.example.donde_estas.dto.avistamiento.AvistamientoDTO;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -18,7 +19,6 @@ public class Avistamiento{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String comentario;
-    private String foto; // URL o path de la foto
     private LocalDateTime fechaCreacion;
 
     @JsonIgnore
@@ -32,11 +32,10 @@ public class Avistamiento{
     private Publicacion publicacion;
 
     @OneToMany(mappedBy = "avistamiento", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Foto> fotos;
+    private List<Foto> fotos = new ArrayList<>();
 
-    public Avistamiento(String comentario, String foto, Usuario usuario, Ubicacion ubicacion, Publicacion publicacion) {
+    public Avistamiento(String comentario, Usuario usuario, Ubicacion ubicacion, Publicacion publicacion) {
         this.comentario = comentario;
-        this.foto = foto;
         this.fechaCreacion = LocalDateTime.now();
         this.usuario = usuario;
         this.ubicacion = ubicacion;
@@ -44,8 +43,8 @@ public class Avistamiento{
     }
     public Avistamiento(AvistamientoDTO dto) {
         this.comentario = dto.getComentario();
-        this.foto = dto.getFoto();
         this.fechaCreacion = dto.getFechaCreacion();
+        this.fotos = dto.getFotos();
     }
 
     public Avistamiento() {

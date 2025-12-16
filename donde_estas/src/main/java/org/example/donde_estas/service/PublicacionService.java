@@ -3,10 +3,7 @@ package org.example.donde_estas.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.example.donde_estas.dto.publicacion.PublicacionDTO;
 import org.example.donde_estas.dto.publicacion.PublicacionModificadaDTO;
-import org.example.donde_estas.model.Mascota;
-import org.example.donde_estas.model.Publicacion;
-import org.example.donde_estas.model.Ubicacion;
-import org.example.donde_estas.model.Usuario;
+import org.example.donde_estas.model.*;
 import org.example.donde_estas.repository.PublicacionRepository;
 import org.example.donde_estas.service.helper.PublicacionHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +70,11 @@ public class PublicacionService {
         else {
             Usuario usuarioPersistido = usuarioService.findById(dto.getUsuarioId());
             publicacionNueva.setUsuario(usuarioPersistido);
+        }
+        if (dto.getFotos() != null) {
+            List<Foto> fotos = dto.getFotos();
+            fotos.forEach(f -> f.setPublicacion(publicacionNueva));
+            publicacionNueva.setFotos(fotos);
         }
         publicacionHelperService.validarPublicacionDuplicada(publicacionNueva);
         return new PublicacionDTO(publicacionRepository.save(publicacionNueva));

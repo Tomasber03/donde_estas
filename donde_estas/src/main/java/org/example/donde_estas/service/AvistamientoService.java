@@ -4,10 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.example.donde_estas.dto.avistamiento.AvistamientoDTO;
 import org.example.donde_estas.dto.publicacion.PublicacionDTO;
-import org.example.donde_estas.model.Avistamiento;
-import org.example.donde_estas.model.Publicacion;
-import org.example.donde_estas.model.Ubicacion;
-import org.example.donde_estas.model.Usuario;
+import org.example.donde_estas.model.*;
 import org.example.donde_estas.repository.AvistamientoRepository;
 import org.example.donde_estas.repository.PublicacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +56,11 @@ public class AvistamientoService {
             avistamiento.setUbicacion(ubicacionExistente);
         } else {
             avistamiento.setUbicacion(dto.getUbicacion());
+        }
+        if (dto.getFotos() != null) {
+            List<Foto> fotos = dto.getFotos();
+            fotos.forEach(f -> f.setAvistamiento(avistamiento));
+            avistamiento.setFotos(fotos);
         }
 
         return avistamientoRepo.save(avistamiento);
