@@ -4,11 +4,12 @@ import { PublicacionService } from '../../services/PublicactionService.service';
 import { CommonModule, Location } from '@angular/common';
 import { UserService } from '../../services/UserService.service';
 import { Publicacion, UsuarioContacto} from '../models.model';
+import { MapComponent } from './map.component';
 
 @Component({
   selector: 'app-detalle-publicacion',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MapComponent],
   templateUrl: './detalle-publicacion.component.html',
 })
 export class DetallePublicacionComponent implements OnInit {
