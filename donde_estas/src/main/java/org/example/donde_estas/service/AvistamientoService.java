@@ -43,7 +43,6 @@ public class AvistamientoService {
 
         Publicacion publicacion = publicacionRepository.findById(dto.getPublicacionId())
                 .orElseThrow(() -> new EntityNotFoundException("Publicacion no encontrada con id: " + dto.getPublicacionId()));
-        publicacion.setUsuario(usuarioService.findById(dto.getUsuarioId()));
         avistamiento.setPublicacion(publicacion);
 
 
@@ -67,7 +66,7 @@ public class AvistamientoService {
     }
 
     public Avistamiento findById(Long id) {
-        return avistamientoRepo.findById(id).orElse(null);
+        return avistamientoRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Avistamiento no encontrado con id: " + id));
     }
     public List<Avistamiento> findAll() {
         return avistamientoRepo.findAll();
