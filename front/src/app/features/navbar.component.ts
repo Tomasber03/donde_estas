@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -7,10 +9,39 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './navbar.component.html',
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   navItems = [
     { label: 'Inicio', active: true },
     { label: 'Reportar Mascota', active: false },
     { label: 'Mis Reportes', active: false },
   ];
+
+  isAuthenticated: boolean = false;
+  userName: string = '';
+
+  constructor(
+    public authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    this.checkAuthentication();
+  }
+
+  checkAuthentication() {
+    this.isAuthenticated = this.authService.isAuthenticated();
+    if (this.isAuthenticated) {
+      const user = this.authService.getCurrentUser();
+      this.userName = user?.nombre || 'Usuario';
+    }
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']);
+  }
+
+  logout() {
+    this.authService.logout();
+    this.checkAuthentication();
+  }
 }

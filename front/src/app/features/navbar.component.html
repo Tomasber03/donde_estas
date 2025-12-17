@@ -36,12 +36,24 @@
     </button>
     </div>
 
-    <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 pr-2 rounded-full transition-colors">
-    <div class="bg-orange-100 rounded-full p-1 border border-orange-200">
+    <!-- Botón de Iniciar Sesión (solo si NO está autenticado) -->
+    <button 
+      *ngIf="!isAuthenticated" 
+      (click)="goToLogin()"
+      class="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">
+      Iniciar Sesión
+    </button>
+
+    <!-- Perfil del usuario (solo si ESTÁ autenticado) -->
+    <div 
+      *ngIf="isAuthenticated" 
+      class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 pr-3 rounded-full transition-colors"
+      (click)="logout()">
+      <div class="bg-orange-100 rounded-full p-1 border border-orange-200">
         <svg class="h-8 w-8 text-orange-800" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
-    </div>
-    <span class="text-sm font-medium text-gray-700 hidden sm:block">María González</span>
+      </div>
+      <span class="text-sm font-medium text-gray-700 hidden sm:block">{{ userName }}</span>
     </div>
 </nav>

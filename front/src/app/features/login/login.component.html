@@ -18,7 +18,7 @@
     <p class="subtitle">Plataforma colaborativa para búsqueda de mascotas perdidas</p>
 
     <!-- Formulario -->
-    <form class="login-form">
+    <form class="login-form" (ngSubmit)="onSubmit()">
       <!-- Email -->
       <div class="form-group">
         <label for="email">Email</label>
@@ -28,6 +28,9 @@
           name="email" 
           placeholder="tu@email.com"
           class="form-control"
+          [(ngModel)]="email"
+          [disabled]="isLoading"
+          required
         />
       </div>
 
@@ -40,7 +43,15 @@
           name="password" 
           placeholder="········"
           class="form-control"
+          [(ngModel)]="password"
+          [disabled]="isLoading"
+          required
         />
+      </div>
+
+      <!-- Mensaje de error -->
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
       </div>
 
       <!-- Usuarios de prueba 
@@ -56,7 +67,9 @@
       -->
 
       <!-- Botón -->
-      <button type="submit" class="btn-login">Iniciar Sesión</button>
+      <button type="submit" class="btn-login" [disabled]="isLoading">
+        {{ isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+      </button>
 
       <!-- Link registro -->
       <p class="register-link">
