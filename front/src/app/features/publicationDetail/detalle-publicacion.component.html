@@ -13,7 +13,7 @@
       <div class="lg:col-span-2 space-y-6">
         
         <div class="w-full h-96 bg-gray-200 rounded-2xl overflow-hidden shadow-sm">
-          <img [src]="publicacion.mascota.fotoUrl || 'assets/placeholder-dog.jpg'" 
+          <img [src]="'/assets/images/' + publicacion.fotos[0].nombre" 
                [alt]="publicacion.mascota.nombre" 
                class="w-full h-full object-cover">
         </div>
@@ -26,7 +26,7 @@
             </div>
             <span [ngClass]="getEstadoBadgeColor(publicacion.estadoInicial)" 
                   class="px-4 py-1 rounded-full text-white text-sm font-semibold shadow-sm">
-              {{ publicacion.estadoInicial }}
+              {{ publicacion.estadoInicial.replaceAll("_", " ") }}
             </span>
           </div>
 

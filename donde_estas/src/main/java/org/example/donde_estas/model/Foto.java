@@ -15,7 +15,7 @@ public class Foto{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String url;
+    private String nombre;
     private String descripcion;
     private LocalDateTime fechaCreacion;
     private boolean esDePublicacion;
@@ -27,8 +27,8 @@ public class Foto{
     private Avistamiento avistamiento;
 
 
-    public Foto(String url, boolean esDePublicacion) {
-        this.url = url;
+    public Foto(String nombre, boolean esDePublicacion) {
+        this.nombre = nombre;
         this.fechaCreacion = LocalDateTime.now();
         this.esDePublicacion = esDePublicacion;
     }

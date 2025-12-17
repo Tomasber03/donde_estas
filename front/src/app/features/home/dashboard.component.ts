@@ -1,13 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PetCardComponent } from './pet-card.component';
 import { Pet } from './pet.model';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/UserService.service';
-
-
-interface User { id: number; nombre: string; apellido: string; clave: string; email: string; telefono: string; barrio: string; ciudad: string; rolPersistido: string;}
+import { Publicacion } from '../models.model';
+import { PublicacionService } from '../../services/PublicactionService.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -17,24 +16,63 @@ interface User { id: number; nombre: string; apellido: string; clave: string; em
 export class DashboardComponent implements OnInit {
   stringBusqueda: string = '';
   tipo: string = 'todos';
-  selectedTab: string = 'Perdido Propio';
-  user : User = { id: 0, nombre: '', apellido: '', clave: '', email: '', telefono: '', barrio: '', ciudad: '', rolPersistido: ''};
+  selectedTab: string = 'Todos';
+  publicaciones: Publicacion[] = [];
+  countForTab = {PERDIDO_PROPIO: 0, PERDIDO_AJENO: 0, RECUPERADO: 0, ADOPTADO: 0};
   // Datos simulados basados en la imagen
-  constructor (private router: Router, private userService: UserService) {}
+  constructor (private cdr: ChangeDetectorRef, private router: Router, private userService: UserService, private publicacionService: PublicacionService) {}
   ngOnInit(): void {
-    this.userService.getUser(2).subscribe({next : (data) => { this.user = data; }});
-    console.log(this.user)
-    this.filterPets();
+    this.publicacionService.getPublicacions().subscribe({
+      next: (data: any) => {
+        this.publicaciones = data;
+        
+        // Reiniciar contadores por seguridad si se llegara a llamar más de una vez
+        this.countForTab = { PERDIDO_PROPIO: 0, PERDIDO_AJENO: 0, RECUPERADO: 0, ADOPTADO: 0 };
+
+        // Calcular contadores
+        for (let pub of this.publicaciones) {
+          if (pub.activo) {
+             // Asegúrate que el estado venga exactamente como la clave (mayúsculas/guiones)
+             // Si pub.estadoInicial es "PERDIDO_PROPIO", funcionará.
+             const estadoKey = pub.estadoInicial as keyof typeof this.countForTab;
+             if (this.countForTab[estadoKey] !== undefined) {
+                 this.countForTab[estadoKey]++;
+             }
+          }
+        }
+
+        this.updateTabsArray(); 
+        
+        this.filterPets();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error publicaciones', err);
+      }
+    });
   }
+
+  // Método auxiliar para refrescar la visualización de las pestañas
+  updateTabsArray() {
+    this.tabs = [
+      { label: 'Todos', count: this.publicaciones.length },
+      { label: 'Perdido Propio', count: this.countForTab.PERDIDO_PROPIO },
+      { label: 'Perdido Ajeno', count: this.countForTab.PERDIDO_AJENO },
+      { label: 'Recuperado', count: this.countForTab.RECUPERADO },
+      { label: 'Adoptado', count: this.countForTab.ADOPTADO },
+    ];
+  }
+
   filterPets(): void{
     if (!this.stringBusqueda) {
-      this.filteredPetsList = this.pets;
+      this.filteredPetsList = this.publicaciones;
     }
     const lowerSearch = this.stringBusqueda.toLowerCase();
-    this.filteredPetsList = this.pets.filter(pet =>
-      pet.name.toLowerCase().startsWith(lowerSearch) ||
-      pet.breed.toLowerCase().startsWith(lowerSearch) ||
-      pet.location.toLowerCase().startsWith(lowerSearch)
+    this.filteredPetsList = this.publicaciones.filter(publicacion =>
+      publicacion.mascota.nombre.toLowerCase().startsWith(lowerSearch) ||
+      publicacion.mascota.raza.toLowerCase().startsWith(lowerSearch) ||
+      publicacion.ubicacion.ciudad.toLowerCase().startsWith(lowerSearch) || 
+      publicacion.ubicacion.barrio.toLowerCase().startsWith(lowerSearch)  
     );
     this.filterType();
     this.filterByStatus(this.selectedTab)
@@ -45,65 +83,22 @@ export class DashboardComponent implements OnInit {
     } 
     else if (this.tipo === 'otro')
     {
-      this.filteredPetsList = this.filteredPetsList.filter(pet => pet.type.toLowerCase() !== 'perro' && pet.type.toLowerCase() !== 'gato');
+      this.filteredPetsList = this.filteredPetsList.filter(publicacion => publicacion.mascota.tipo.toLowerCase() !== 'perro' && publicacion.mascota.tipo.toLowerCase() !== 'gato');
     }
     else
     {
-      this.filteredPetsList = this.filteredPetsList.filter(pet => pet.type.toLowerCase() === this.tipo.toLowerCase());
+      this.filteredPetsList = this.filteredPetsList.filter(publicacion => publicacion.mascota.tipo.toLowerCase() === this.tipo.toLowerCase());
     }
   }
   
-  pets: Pet[] = [
-    {
-      id: 1,
-      name: 'Max',
-      type: 'Perro',
-      breed: 'Labrador Retriever',
-      location: 'Parque Las Heras, Palermo, CABA',
-      date: '27/9/2025',
-      reward: '$50.000',
-      imageUrl: 'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?auto=format&fit=crop&q=80&w=800', // Foto de Golden/Labrador
-      statusTag: 'Perdido Propio'
-    },
-    {
-      id: 2,
-      name: 'Luna',
-      type: 'Perro',
-      breed: 'Caniche', // O similar según imagen (Corgi mix en la foto)
-      location: 'Villa Urquiza, CABA',
-      date: '30/9/2025',
-      imageUrl: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=800', // Foto de Corgi
-      statusTag: 'Perdido Propio'
-    },
-    {
-      id: 3,
-      name: 'Rocky',
-      type: 'Perro',
-      breed: 'Pastor Alemán', // O Husky según imagen
-      location: 'Belgrano, CABA',
-      date: '26/9/2025',
-      reward: '$70.000',
-      imageUrl: 'https://images.unsplash.com/photo-1563889958749-6bb433e7eb89?auto=format&fit=crop&q=80&w=800', // Foto de Husky
-      statusTag: 'Perdido Propio'
-    }
-    ,
-    {
-      id: 4,
-      name: 'Max',
-      type: 'Gato',
-      breed: 'Siames',
-      location: 'Caballito, CABA',
-      date: '25/9/2025',
-      imageUrl: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&q=80&w=800', // Foto de Gato Siames
-      statusTag: 'Perdido Ajeno' 
-    },
-  ];
-  filteredPetsList: Pet[] = this.pets;
+ 
+  filteredPetsList: Publicacion[] = this.publicaciones;
   tabs = [
-    { label: 'Perdido Propio', count: 3},
-    { label: 'Perdido Ajeno', count: 1},
-    { label: 'Recuperado', count: 0},
-    { label: 'Adoptado', count: 0},
+    { label: 'Todos', count: this.publicaciones.length},
+    { label: 'Perdido Propio', count: this.countForTab.PERDIDO_PROPIO},
+    { label: 'Perdido Ajeno', count: this.countForTab.PERDIDO_AJENO},
+    { label: 'Recuperado', count: this.countForTab.RECUPERADO},
+    { label: 'Adoptado', count: this.countForTab.ADOPTADO},
   ];
   onTabClick(selectedTab: any): void {
     this.selectedTab = selectedTab.label;
@@ -111,7 +106,29 @@ export class DashboardComponent implements OnInit {
   }
 
   filterByStatus(status: string): void {
-    this.filteredPetsList = this.filteredPetsList.filter(pet => pet.statusTag === status);
+  // 1. Si es 'Todos', no filtramos nada (dejar la lista como está)
+  if (status === 'Todos') {
+    return;
   }
+
+  // 2. Normalizamos el status del TAB (ej: "Perdido Propio" -> "perdido propio")
+  // Usamos replaceAll por si acaso hubiera más de un guion bajo
+  const estadoBuscado = status.toLowerCase().replaceAll("_", " ").trim();
+
+  this.filteredPetsList = this.filteredPetsList.filter(publicacion => {
+    // 3. Determinar qué campo mirar
+    const estadoActual = publicacion.activo 
+        ? publicacion.estadoInicial 
+        : publicacion.estadoCierre;
+
+    // 4. Normalizamos el estado de la PUBLICACION (ej: "PERDIDO_PROPIO" -> "perdido propio")
+    // Verificamos que no sea null/undefined para evitar errores
+    if (!estadoActual) return false;
+
+    const estadoNormalizado = estadoActual.toLowerCase().replaceAll("_", " ").trim();
+
+    return estadoNormalizado === estadoBuscado;
+  });
+}
   
 }

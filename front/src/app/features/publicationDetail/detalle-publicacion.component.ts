@@ -3,36 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PublicacionService } from '../../services/PublicactionService.service'; // Ajusta tu path
 import { CommonModule, Location } from '@angular/common';
 import { UserService } from '../../services/UserService.service';
-export interface Mascota {
-  id: number;
-  nombre: string;
-  tipo: string; // Perro, Gato
-  raza: string;
-  color: string;
-  tamano: string; // Grande, Mediano...
-  edad: string; // Joven, Adulto...
-  fotoUrl: string; // URL de la imagen
-}
-
-interface UsuarioContacto { id: number; nombre: string; apellido: string; email: string; telefono: string; barrio: string; ciudad: string; rolPersistido: string;}
-export interface Ubicacion {
-    barrio: string;
-    ciudad: string;
-    latitud: string;
-    longitud: string;
-}
-export interface Publicacion {
-  id: number;
-  activo: boolean;
-  estadoInicial: string; // Ajusta a tus Enums
-  estadoCierre: string;
-  fechaInicial: string;
-  fechaModificacion: string;
-  descripcion: string;
-  mascota: Mascota;
-  ubicacion: Ubicacion;
-  usuarioId: number; 
-}
+import { Publicacion, UsuarioContacto} from '../models.model';
 
 @Component({
   selector: 'app-detalle-publicacion',
