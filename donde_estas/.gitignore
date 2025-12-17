@@ -45,3 +45,4 @@ build/
 *.tmp
 .DS_Store
 Thumbs.db
+/src/variables.txt
