@@ -13,7 +13,7 @@ import { Publicacion} from '../models.model';
       <div class="relative h-64 w-full">
         <img [src]="'/assets/images/' + publicacion.fotos[0].nombre" [alt]="publicacion.mascota.nombre" class="w-full h-full object-cover">
         <span class="absolute top-4 right-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
-          {{ publicacion.activo ? publicacion.estadoInicial : publicacion.estadoCierre }}
+          {{ publicacion.activo ? publicacion.estadoInicial.replaceAll("_", " ") : publicacion.estadoCierre.replaceAll("_", " ") }}
         </span>
       </div>
 
