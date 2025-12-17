@@ -18,6 +18,7 @@ export class NavbarComponent implements OnInit {
 
   isAuthenticated: boolean = false;
   userName: string = '';
+  showUserMenu: boolean = false;
 
   constructor(
     public authService: AuthService,
@@ -36,11 +37,21 @@ export class NavbarComponent implements OnInit {
     }
   }
 
+  toggleUserMenu() {
+    this.showUserMenu = !this.showUserMenu;
+  }
+
   goToLogin() {
     this.router.navigate(['/login']);
   }
 
+  goToProfile() {
+    this.showUserMenu = false;
+    this.router.navigate(['/profile']);
+  }
+
   logout() {
+    this.showUserMenu = false;
     this.authService.logout();
     this.checkAuthentication();
   }
