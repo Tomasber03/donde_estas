@@ -24,8 +24,10 @@ public class Avistamiento{
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Ubicacion ubicacion;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "publicacion_id")
@@ -49,5 +51,17 @@ public class Avistamiento{
 
     public Avistamiento() {
 
+    }
+    @Override
+    public String toString() {
+        return "Avistamiento{" +
+                "id=" + id +
+                ", comentario='" + comentario + '\'' +
+                ", fechaCreacion=" + fechaCreacion +
+                ", usuario=" + (usuario != null ? usuario.getId() : null) +
+                ", ubicacion=" + ubicacion +
+                ", publicacion=" + (publicacion != null ? publicacion.getId() : null) +
+                ", fotos=" + fotos +
+                '}';
     }
 }

@@ -32,5 +32,15 @@ public class Ubicacion{
     public Ubicacion() {
 
     }
+    @Override
+    public String toString() {
+        return "Ubicacion{" +
+                "id=" + id +
+                ", ciudad='" + ciudad + '\'' +
+                ", barrio='" + barrio + '\'' +
+                ", latitud='" + latitud + '\'' +
+                ", longitud='" + longitud + '\'' +
+                '}';
+    }
     
 }

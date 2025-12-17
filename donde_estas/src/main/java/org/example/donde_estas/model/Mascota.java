@@ -30,6 +30,17 @@ public class Mascota {
     }
     public Mascota() {
     }
+    @Override
+    public String toString() {
+        return "Mascota{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", raza='" + raza + '\'' +
+                ", color='" + color + '\'' +
+                ", tamano='" + tamano + '\'' +
+                ", tipo='" + tipo + '\'' +
+                '}';
+    }
 
 
 }
