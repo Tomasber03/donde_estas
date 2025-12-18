@@ -1,0 +1,75 @@
+<div class="avistamiento-container">
+  <h1 class="title">Reportar Avistamiento</h1>
+  
+  <form class="avistamiento-form" (ngSubmit)="onSubmit()">
+    
+    <!-- Sección de Subir Foto -->
+    <div class="form-section">
+      <h2 class="section-title">Fotografía del Avistamiento</h2>
+      <div class="photo-upload-area">
+        <input 
+          type="file" 
+          id="photo-input" 
+          (change)="onPhotoSelected($event)"
+          accept="image/*"
+          hidden
+        />
+        <label for="photo-input" class="photo-label">
+          <div class="upload-icon" *ngIf="!photoPreview">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <p>Haz clic o arrastra una foto aquí</p>
+          </div>
+          <div *ngIf="photoPreview" class="photo-preview">
+            <img [src]="photoPreview" alt="Vista previa" />
+            <button type="button" class="remove-photo" (click)="removePhoto($event)">✕</button>
+          </div>
+        </label>
+        <p class="file-name" *ngIf="selectedFileName">{{ selectedFileName }}</p>
+      </div>
+    </div>
+
+    <!-- Sección de Comentario -->
+    <div class="form-section">
+      <h2 class="section-title">Descripción del Avistamiento</h2>
+      <textarea 
+        class="comment-area"
+        [(ngModel)]="comentario"
+        name="comentario"
+        placeholder="Describe detalladamente el avistamiento: ¿Cómo era la mascota? ¿Cuál era su comportamiento? ¿Había alguna característica distintiva?"
+        rows="8"
+        maxlength="1000"
+      ></textarea>
+      <div class="char-counter">{{ comentario.length }}/1000 caracteres</div>
+    </div>
+
+    <!-- Sección de Ubicación (Mapa) -->
+    <div class="form-section">
+      <h2 class="section-title">Ubicación del Avistamiento</h2>
+      <app-editable-map 
+        [initialLat]="-34.9011" 
+        [initialLng]="-56.1645"
+        (locationSelected)="onLocationSelected($event)">
+      </app-editable-map>
+      <p class="location-hint" *ngIf="!ubicacion">
+        ⚠️ Debes marcar una ubicación en el mapa
+      </p>
+      <p class="location-confirmed" *ngIf="ubicacion">
+        ✅ Ubicación marcada correctamente
+      </p>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" (click)="onCancel()">
+        Cancelar
+      </button>
+      <button type="submit" class="btn-submit" [disabled]="!isFormValid()">
+        Enviar Avistamiento
+      </button>
+    </div>
+  </form>
+</div>
