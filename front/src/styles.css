@@ -1,3 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "tailwindcss";
+
+/* Animación de rotación para la flecha del menú */
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* Asegurar que todos los elementos interactivos tengan cursor pointer */
+button, .cursor-pointer {
+  cursor: pointer !important;
+}
+
+/* Animación suave para el dropdown */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Aplicar animación al menú desplegable del navbar */
+.absolute.right-0.mt-2.w-56 {
+  animation: slideDown 0.2s ease-out;
+}
+

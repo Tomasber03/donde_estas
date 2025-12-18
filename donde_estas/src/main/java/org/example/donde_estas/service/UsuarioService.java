@@ -51,7 +51,7 @@ public class UsuarioService {
 
         usuarioRepo.save(usuarioPersistido);
 
-        return cargarRol(usuario);
+        return cargarRol(usuarioPersistido);
     }
     public Usuario updateRol(Long id, Rol rol)
     {
