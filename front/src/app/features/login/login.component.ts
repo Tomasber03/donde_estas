@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import {ChangeDetectorRef} from "@angular/core";
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,8 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   onSubmit() {
@@ -54,9 +56,11 @@ export class LoginComponent {
         } else {
           this.errorMessage = 'Error al conectar con el servidor. Intenta nuevamente.';
         }
+        this.cdr.detectChanges();
       },
       complete: () => {
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }

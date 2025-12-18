@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
 @Service
 public class AuthService {
@@ -80,9 +81,7 @@ public class AuthService {
     public Usuario getUserFromToken(String token) {
         String email = tokenService.getUsernameFromToken(token);
         return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED, 
-                        "Usuario no encontrado"
+                .orElseThrow(() -> new AuthenticationCredentialsNotFoundException("Usuario no encontrado en el token"
                 ));
     }
 }
