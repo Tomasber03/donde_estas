@@ -32,3 +32,13 @@ export interface Publicacion {
   usuarioId: number; 
   fotos : Foto[];
 }
+
+export interface Avistamiento {
+  id: number;
+  fechaCreacion: string;
+  comentario: string;
+  usuarioId: number;
+  publicacionId: number;
+  ubicacion: Ubicacion;
+  fotos: Foto[];
+}

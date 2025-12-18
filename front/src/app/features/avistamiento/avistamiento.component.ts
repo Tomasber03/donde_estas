@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -18,7 +18,10 @@ export class AvistamientoComponent {
   selectedFileName: string = '';
   ubicacion: MapLocation | null = null;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   onPhotoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -30,6 +33,7 @@ export class AvistamientoComponent {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         this.photoPreview = e.target?.result as string;
+        this.cdr.detectChanges();
       };
       reader.readAsDataURL(this.selectedFile);
     }
@@ -38,6 +42,7 @@ export class AvistamientoComponent {
   onLocationSelected(location: MapLocation): void {
     this.ubicacion = location;
     console.log('Ubicación seleccionada:', location);
+    this.cdr.detectChanges();
   }
 
   removePhoto(event: Event): void {
@@ -46,6 +51,7 @@ export class AvistamientoComponent {
     this.selectedFile = null;
     this.photoPreview = null;
     this.selectedFileName = '';
+    this.cdr.detectChanges();
   }
 
   isFormValid(): boolean {
@@ -82,5 +88,6 @@ export class AvistamientoComponent {
     this.photoPreview = null;
     this.selectedFileName = '';
     this.ubicacion = null;
+    this.cdr.detectChanges();
   }
 }

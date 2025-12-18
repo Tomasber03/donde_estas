@@ -105,6 +105,7 @@ export class ProfileComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.tempPreviewImage = e.target.result;
+        this.cdr.detectChanges();
       };
       reader.readAsDataURL(file);
     }
