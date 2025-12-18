@@ -1,14 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './navbar.component.html',
 })
-export class NavbarComponent {
-  constructor(private router: Router) {}
+export class NavbarComponent implements OnInit {
+  isAuthenticated: boolean = false;
+  userName: string = '';
+  showUserMenu: boolean = false;
+
+  constructor(
+    public authService: AuthService,
+    private router: Router
+  ) {}
+
   navItems = [
     { label: 'Inicio', active: true },
     { label: 'Reportar Mascota', active: false },
@@ -16,5 +26,37 @@ export class NavbarComponent {
   ];
   redirectHome() {
     this.router.navigate(['/']);
+  }
+  
+
+  ngOnInit() {
+    this.checkAuthentication();
+  }
+
+  checkAuthentication() {
+    this.isAuthenticated = this.authService.isAuthenticated();
+    if (this.isAuthenticated) {
+      const user = this.authService.getCurrentUser();
+      this.userName = user?.nombre || 'Usuario';
+    }
+  }
+
+  toggleUserMenu() {
+    this.showUserMenu = !this.showUserMenu;
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']);
+  }
+
+  goToProfile() {
+    this.showUserMenu = false;
+    this.router.navigate(['/profile']);
+  }
+
+  logout() {
+    this.showUserMenu = false;
+    this.authService.logout();
+    this.checkAuthentication();
   }
 }
