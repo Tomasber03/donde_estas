@@ -179,9 +179,12 @@ export class CreatePublicationComponent implements OnInit {
       return;
     }
 
-    if (!this.formData.ciudad || !this.formData.barrio) {
-      alert('Espera a que se carguen los datos de ubicación del mapa');
-      return;
+    // Si ciudad o barrio están vacíos, usar valores por defecto
+    if (!this.formData.ciudad || this.formData.ciudad.trim() === '') {
+      this.formData.ciudad = 'No especificada';
+    }
+    if (!this.formData.barrio || this.formData.barrio.trim() === '') {
+      this.formData.barrio = 'No especificado';
     }
 
     // Obtener el usuario actual
@@ -212,7 +215,9 @@ export class CreatePublicationComponent implements OnInit {
         raza: this.formData.razaMascota?.trim() || 'Sin especificar',
         color: this.formData.colorMascota?.trim() || 'Sin especificar',
         tamano: this.formData.tamanioMascota || 'Sin especificar',
-        tipo: this.formData.especieMascota || 'Sin especificar'
+        tipo: this.formData.especieMascota || 'Sin especificar',
+        sexo: this.formData.sexoMascota || 'Sin especificar',
+        senasParticulares: this.formData.senasParticularMascota?.trim() || null
       };
     }
 
@@ -246,12 +251,22 @@ export class CreatePublicationComponent implements OnInit {
         fotosDTO: fotosBase64
       };
 
+      console.log('=== DATOS A ENVIAR ===');
+      console.log('Usuario ID:', currentUser.userId);
+      console.log('Publicación DTO:', JSON.stringify(publicacionDTO, null, 2));
+
       this.publicacionService.createPublicacion(publicacionDTO).subscribe({
         next: (response) => {
+          console.log('✅ Publicación creada exitosamente:', response);
           alert('Publicación creada exitosamente');
+          this.isSubmitting = false;
           this.router.navigate(['/home']);
         },
         error: (error) => {
+          console.error('❌ Error completo:', error);
+          console.error('Status:', error.status);
+          console.error('Error response:', error.error);
+          
           let errorMsg = 'Error al crear la publicación';
           
           if (error.error) {
@@ -268,8 +283,15 @@ export class CreatePublicationComponent implements OnInit {
           
           alert(errorMsg);
           this.isSubmitting = false;
+        },
+        complete: () => {
+          this.isSubmitting = false;
         }
       });
+    }).catch(error => {
+      console.error('Error al convertir imágenes:', error);
+      alert('Error al procesar las imágenes');
+      this.isSubmitting = false;
     });
   }
 

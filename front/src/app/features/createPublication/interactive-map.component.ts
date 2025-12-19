@@ -99,14 +99,12 @@ export class InteractiveMapComponent implements AfterViewInit, OnDestroy {
       .bindPopup('Ubicación seleccionada')
       .openPopup();
 
-    // Guardar ubicación seleccionada
+    // Guardar ubicación seleccionada temporalmente
     this.selectedLocation = { lat, lng };
 
     // Hacer geocoding inverso para obtener ciudad y barrio
+    // El evento se emitirá después del geocoding
     this.reverseGeocode(lat, lng);
-
-    // Emitir evento con la ubicación
-    this.locationSelected.emit(this.selectedLocation);
   }
 
   private async reverseGeocode(lat: number, lng: number): Promise<void> {
