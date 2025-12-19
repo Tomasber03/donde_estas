@@ -26,11 +26,11 @@ public class PublicacionService {
     private UbicacionService ubicacionService;
 
     public List<PublicacionDTO> findAll() {
-        return publicacionRepository.findAllWithFotos().stream().map(p -> new PublicacionDTO(p)).toList();
+        return publicacionRepository.findAllWithFotos().stream().filter(p -> !p.isBorrado()).map(p -> new PublicacionDTO(p)).toList();
     }
     
     public PublicacionDTO findById(Long id) {
-        return new PublicacionDTO(publicacionRepository.findByIdWithFotos(id).orElseThrow(EntityNotFoundException::new));
+        return new PublicacionDTO(publicacionRepository.findByIdWithFotos(id).filter(p -> !p.isBorrado()).orElseThrow(EntityNotFoundException::new));
     }
 
     /*
@@ -116,6 +116,12 @@ public class PublicacionService {
         publicacionHelperService.validarPublicacionDuplicada(publicacionNueva);
         return new PublicacionDTO(publicacionRepository.save(publicacionNueva));
     }
+    @Transactional
+    public void delete(Long id) {
+        Publicacion publicacion = publicacionRepository.findById(id).filter(p -> !p.isBorrado()).orElseThrow(EntityNotFoundException::new);
+        publicacion.setBorrado(true);
+        publicacionRepository.save(publicacion);
+    }
 
     @Transactional
     public Publicacion recuperado(Long id) {
@@ -133,7 +139,7 @@ public class PublicacionService {
     @Transactional
     public Publicacion adoptado(Long id) {
         publicacionHelperService.notExistsPublicacion(id);
-        Publicacion publicacion = publicacionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Publicacion publicacion = publicacionRepository.findById(id).filter(p -> !p.isBorrado()).orElseThrow(EntityNotFoundException::new);
         publicacion.adoptado();
         return publicacionRepository.save(publicacion);
     }

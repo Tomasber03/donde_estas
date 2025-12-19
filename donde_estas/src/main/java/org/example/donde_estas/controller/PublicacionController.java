@@ -7,7 +7,9 @@ import org.apache.coyote.Response;
 import org.example.donde_estas.dto.publicacion.PublicacionDTO;
 import org.example.donde_estas.dto.publicacion.PublicacionModificadaDTO;
 import org.example.donde_estas.model.Publicacion;
+import org.example.donde_estas.service.AuthService;
 import org.example.donde_estas.service.PublicacionService;
+import org.example.donde_estas.service.RolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,10 @@ import java.util.List;
 public class PublicacionController {
     @Autowired
     private PublicacionService publicacionService;
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private RolService rolService;
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody PublicacionDTO dto) {
@@ -40,6 +46,16 @@ public class PublicacionController {
     @GetMapping
     public ResponseEntity<List<PublicacionDTO>> list() {
         return ResponseEntity.ok().body(publicacionService.findAll());
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") Long id, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        if (!rolService.hasPermission(authService.getUserFromToken(token).getRolNuevo().getNombre(), "ELIMINAR_PUBLICACIONES")) {
+            System.out.println(authService.getUserFromToken(token).getRolNuevo().getNombre());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permiso para eliminar publicaciones.");
+        }   
+        publicacionService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/{id}")

@@ -16,6 +16,8 @@ export class DetallePublicacionComponent implements OnInit {
   publicacion: Publicacion | null = null;
   loading = true;
   usuarioContacto: UsuarioContacto | null = null;
+  permisoEdicion = false;
+  permisoEliminacion = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -82,6 +84,28 @@ export class DetallePublicacionComponent implements OnInit {
   reportarAvistamiento() {
     if (this.publicacion) {
       this.router.navigate(['/avistamiento/nuevo', this.publicacion.id]);
+    }
+  }
+
+  editarPublicacion() {
+  }
+  eliminarPublicacion() {
+    if (this.publicacion && this.publicacion.id) {
+      this.publicacionService.deletePublicacion(this.publicacion.id).subscribe({
+        next: () => {
+          console.log('Publicación eliminada con éxito');
+          this.router.navigate(['/home']);
+        }
+        ,
+        error: (err) => {
+          if (err.status === 403) {
+            alert('No tienes permiso para eliminar esta publicación.');
+            return;
+          }
+          console.error('Error al eliminar la publicación', err);
+          alert('Ocurrió un error al eliminar la publicación.');
+        }
+      });
     }
   }
 

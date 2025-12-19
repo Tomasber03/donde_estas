@@ -47,6 +47,7 @@ public class Publicacion {
 
     @NotBlank(message = "La descripcion es obligatoria")
     private String descripcion;
+    private boolean borrado = false;
 
     public Publicacion(Usuario usuario, boolean estaActivo, Estado estadoInicial, Ubicacion ubicacion, Mascota mascota) {
         super();

@@ -23,6 +23,8 @@ public class UsuarioService {
     private EncryptService encryptService;
     @Autowired
     private UsuarioHelperService UsuarioHelperService;
+    @Autowired
+    private RolService rolService;
 
     @Transactional
     public Usuario persist(UsuarioNuevoDTO dto){
@@ -33,6 +35,9 @@ public class UsuarioService {
         // Asegurar rolPersistido válido para cumplir el CHECK de la BD
         if (user.getRolPersistido() == null) {
             user.setRolPersistido(RolPersistido.USUARIOPUBLICO);
+        }
+        if (user.getRolNuevo() == null) {
+            user.setRolNuevo(rolService.findByNombre("USUARIO_PUBLICO"));
         }
         usuarioRepo.save(user);
         return cargarRol(usuarioRepo.findById(user.getId()).orElseThrow(EntityNotFoundException::new));
