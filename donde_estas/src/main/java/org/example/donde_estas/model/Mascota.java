@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -21,6 +24,9 @@ public class Mascota {
     private String color;
     private String tamano;
     private String tipo;
+    
+    @OneToMany(mappedBy = "mascota", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Foto> fotos = new ArrayList<>();
 
     public Mascota(String nombre, String raza, String color, String tamano) {
         this.nombre = nombre;
@@ -28,8 +34,15 @@ public class Mascota {
         this.color = color;
         this.tamano = tamano;
     }
+    
     public Mascota() {
     }
+    
+    public void addFoto(Foto foto) {
+        fotos.add(foto);
+        foto.setMascota(this);
+    }
+    
     @Override
     public String toString() {
         return "Mascota{" +
@@ -41,6 +54,4 @@ public class Mascota {
                 ", tipo='" + tipo + '\'' +
                 '}';
     }
-
-
 }

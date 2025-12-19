@@ -3,6 +3,7 @@ package org.example.donde_estas.controller;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
+import org.example.donde_estas.dto.publicacion.MascotaConFotosDTO;
 import org.example.donde_estas.model.Mascota;
 import org.example.donde_estas.service.MascotaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/mascota")
@@ -26,13 +31,19 @@ public class MascotaController {
         user.setId(userId);
         return ResponseEntity.status(HttpStatus.OK).body(mascotaService.update(user));
     }
+    
     @GetMapping(value = "/{id}")
-    public Mascota get(@PathVariable("id") Long userId) {
-        return mascotaService.findById(userId);
+    public ResponseEntity<MascotaConFotosDTO> get(@PathVariable("id") Long userId) {
+        Mascota mascota = mascotaService.findById(userId);
+        return ResponseEntity.ok(new MascotaConFotosDTO(mascota));
     }
 
     @GetMapping(value = "/usuario/{userId}")
-    public ResponseEntity<?> getMascotasByUsuario(@PathVariable("userId") Long userId) {
-        return ResponseEntity.ok().body(mascotaService.findByUsuarioId(userId));
+    public ResponseEntity<List<MascotaConFotosDTO>> getMascotasByUsuario(@PathVariable("userId") Long userId) {
+        List<Mascota> mascotas = mascotaService.findByUsuarioId(userId);
+        List<MascotaConFotosDTO> mascotasDTO = mascotas.stream()
+            .map(MascotaConFotosDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(mascotasDTO);
     }
 }

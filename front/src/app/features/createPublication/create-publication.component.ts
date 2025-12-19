@@ -212,58 +212,60 @@ export class CreatePublicationComponent implements OnInit {
       };
     }
 
-    // Preparar el DTO para el backend
-    const publicacionDTO = {
-      descripcion: this.formData.descripcion.trim(),
-      activo: true,
-      estadoInicial: this.formData.estadoInicial,
-      usuarioId: currentUser.userId,
-      mascota: mascotaDTO,
-      ubicacion: {
-        ciudad: this.formData.ciudad.trim(),
-        barrio: this.formData.barrio.trim(),
-        latitud: this.formData.latitud,
-        longitud: this.formData.longitud
-      },
-      fotos: []
-    };
+    // Convertir fotos a Base64
+    const fotosPromises = this.fotosSeleccionadas.map((file, index) => {
+      return new Promise<{nombre: string, url: string}>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          resolve({
+            nombre: file.name,
+            url: e.target.result
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+    });
 
-    console.log('=== Enviando Publicacion ===');
-    console.log('DTO:', JSON.stringify(publicacionDTO, null, 2));
+    Promise.all(fotosPromises).then(fotosBase64 => {
+      const publicacionDTO = {
+        descripcion: this.formData.descripcion.trim(),
+        activo: true,
+        estadoInicial: this.formData.estadoInicial,
+        usuarioId: currentUser.userId,
+        mascotaDTO: mascotaDTO,
+        ubicacionDTO: {
+          ciudad: this.formData.ciudad.trim(),
+          barrio: this.formData.barrio.trim(),
+          latitud: this.formData.latitud,
+          longitud: this.formData.longitud
+        },
+        fotosDTO: fotosBase64
+      };
 
-    this.publicacionService.createPublicacion(publicacionDTO).subscribe({
-      next: (response) => {
-        console.log('✅ Publicación creada exitosamente:', response);
-        alert('Publicación creada exitosamente');
-        this.router.navigate(['/home']);
-      },
-      error: (error) => {
-        console.error('❌ Error al crear publicación:', error);
-        console.error('Status:', error.status);
-        console.error('Message:', error.message);
-        console.error('Error body:', error.error);
-        
-        // Mostrar el mensaje de error exacto del backend
-        let errorMsg = 'Error al crear la publicación';
-        
-        if (error.error) {
-          if (typeof error.error === 'string') {
-            // Si el error es un string directo
-            errorMsg = error.error;
-          } else if (error.error.message) {
-            // Si el error tiene una propiedad message
-            errorMsg = error.error.message;
-          } else if (error.error.error) {
-            // Si el error tiene una propiedad error
-            errorMsg = error.error.error;
+      this.publicacionService.createPublicacion(publicacionDTO).subscribe({
+        next: (response) => {
+          alert('Publicación creada exitosamente');
+          this.router.navigate(['/home']);
+        },
+        error: (error) => {
+          let errorMsg = 'Error al crear la publicación';
+          
+          if (error.error) {
+            if (typeof error.error === 'string') {
+              errorMsg = error.error;
+            } else if (error.error.message) {
+              errorMsg = error.error.message;
+            } else if (error.error.error) {
+              errorMsg = error.error.error;
+            }
+          } else if (error.message) {
+            errorMsg = error.message;
           }
-        } else if (error.message) {
-          errorMsg = error.message;
+          
+          alert(errorMsg);
+          this.isSubmitting = false;
         }
-        
-        alert(errorMsg);
-        this.isSubmitting = false;
-      }
+      });
     });
   }
 

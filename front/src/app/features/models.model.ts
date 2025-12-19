@@ -5,12 +5,16 @@ export interface Mascota {
   raza: string;
   color: string;
   tamano: string; // Grande, Mediano...
-  edad: string; // Joven, Adulto...
+  edad?: string; // Joven, Adulto...
+  fotos?: Foto[]; // Fotos de la mascota
 }
+
 export interface Foto {
-    id: number;
+    id?: number;
     nombre: string;
-    fechaCreacion:string;
+    url?: string; // Base64 o URL
+    descripcion?: string;
+    fechaCreacion?: string;
 }
 export interface UsuarioContacto { id: number; nombre: string; apellido: string; email: string; telefono: string; barrio: string; ciudad: string; puntos:number; rolPersistido: string;}
 export interface Ubicacion {
