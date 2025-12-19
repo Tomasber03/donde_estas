@@ -31,5 +31,8 @@ public class MascotaController {
         return mascotaService.findById(userId);
     }
 
-
+    @GetMapping(value = "/usuario/{userId}")
+    public ResponseEntity<?> getMascotasByUsuario(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok().body(mascotaService.findByUsuarioId(userId));
+    }
 }

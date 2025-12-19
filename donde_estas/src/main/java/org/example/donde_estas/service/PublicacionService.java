@@ -41,6 +41,10 @@ public class PublicacionService {
     @Transactional
     public PublicacionDTO persist(PublicacionDTO dto) {
         Publicacion publicacionNueva = new Publicacion(dto);
+
+        // Asegurar que el campo activo esté establecido
+        publicacionNueva.setActivo(dto.isActivo());
+
         if (dto.getUbicacion() == null)
         {
             throw new EntityNotFoundException("La ubicacion es obligatoria");

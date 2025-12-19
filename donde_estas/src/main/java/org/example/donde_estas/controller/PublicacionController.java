@@ -24,7 +24,45 @@ public class PublicacionController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody PublicacionDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(publicacionService.persist(dto));
+        System.out.println("========== CREAR PUBLICACIÓN ==========");
+        System.out.println("📦 Request Body recibido:");
+        System.out.println("Descripción: " + dto.getDescripcion());
+        System.out.println("Activo: " + dto.isActivo());
+        System.out.println("Estado Inicial: " + dto.getEstadoInicial());
+        System.out.println("Usuario ID: " + dto.getUsuarioId());
+        
+        System.out.println("\n🐕 Datos de Mascota:");
+        if (dto.getMascotaDTO() != null) {
+            System.out.println("  - ID: " + dto.getMascotaDTO().getId());
+            System.out.println("  - Nombre: " + dto.getMascotaDTO().getNombre());
+            System.out.println("  - Tipo: " + dto.getMascotaDTO().getTipo());
+            System.out.println("  - Raza: " + dto.getMascotaDTO().getRaza());
+            System.out.println("  - Color: " + dto.getMascotaDTO().getColor());
+            System.out.println("  - Tamaño: " + dto.getMascotaDTO().getTamano());
+        } else {
+            System.out.println("  - MascotaDTO es NULL");
+        }
+        
+        System.out.println("\n📍 Datos de Ubicación:");
+        if (dto.getUbicacionDTO() != null) {
+            System.out.println("  - Latitud: " + dto.getUbicacionDTO().getLatitud());
+            System.out.println("  - Longitud: " + dto.getUbicacionDTO().getLongitud());
+            System.out.println("  - Ciudad: " + dto.getUbicacionDTO().getCiudad());
+            System.out.println("  - Barrio: " + dto.getUbicacionDTO().getBarrio());
+        } else {
+            System.out.println("  - UbicacionDTO es NULL");
+        }
+        System.out.println("=======================================\n");
+        
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(publicacionService.persist(dto));
+        } catch (Exception e) {
+            System.err.println("❌ ERROR al crear publicación:");
+            System.err.println("Mensaje: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
