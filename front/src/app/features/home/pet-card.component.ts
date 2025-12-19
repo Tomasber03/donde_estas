@@ -11,7 +11,16 @@ import { Publicacion} from '../models.model';
   template: `
     <div (click)="onPetClick(this.publicacion)" style="cursor: pointer;" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 h-full flex flex-col">
       <div class="relative h-64 w-full">
-        <img [src]="'/assets/images/' + publicacion.fotos[0].nombre" [alt]="publicacion.mascota.nombre" class="w-full h-full object-cover">
+        <img *ngIf="publicacion.mascota.fotos && publicacion.mascota.fotos.length > 0" 
+             [src]="publicacion.mascota.fotos[0].url" 
+             [alt]="publicacion.mascota.nombre" 
+             class="w-full h-full object-cover">
+        <div *ngIf="!publicacion.mascota.fotos || publicacion.mascota.fotos.length === 0" 
+             class="w-full h-full bg-gray-200 flex items-center justify-center">
+          <svg class="w-16 h-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
         <span class="absolute top-4 right-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
           {{ publicacion.activo ? publicacion.estadoInicial.replaceAll("_", " ") : publicacion.estadoCierre.replaceAll("_", " ") }}
         </span>

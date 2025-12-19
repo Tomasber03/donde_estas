@@ -1,5 +1,6 @@
 package org.example.donde_estas.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class Mascota {
     private String tamano;
     private String tipo;
     
+    @JsonManagedReference
     @OneToMany(mappedBy = "mascota", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Foto> fotos = new ArrayList<>();
 

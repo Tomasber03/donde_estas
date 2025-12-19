@@ -26,11 +26,11 @@ public class PublicacionService {
     private UbicacionService ubicacionService;
 
     public List<PublicacionDTO> findAll() {
-        // cast into list of dtos
-        return publicacionRepository.findAll().stream().map(p -> new PublicacionDTO(p)).toList();
+        return publicacionRepository.findAllWithFotos().stream().map(p -> new PublicacionDTO(p)).toList();
     }
+    
     public PublicacionDTO findById(Long id) {
-        return new PublicacionDTO(publicacionRepository.findById(id).orElseThrow(EntityNotFoundException::new));
+        return new PublicacionDTO(publicacionRepository.findByIdWithFotos(id).orElseThrow(EntityNotFoundException::new));
     }
 
     /*

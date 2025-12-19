@@ -1,5 +1,6 @@
 package org.example.donde_estas.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,7 +33,7 @@ public class Foto{
     @JoinColumn(name = "avistamiento_id")
     private Avistamiento avistamiento;
     
-    @JsonIgnore
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mascota_id")
     private Mascota mascota;
