@@ -81,4 +81,13 @@ export class PublicacionService {
       })
     );
   }
+
+  createPublicacion(publicacion: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, publicacion).pipe(
+      catchError(error => {
+        console.error('Error creating Publicacion:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

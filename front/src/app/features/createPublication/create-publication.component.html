@@ -1,0 +1,298 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+  <div class="max-w-3xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6">Reportar Mascota</h1>
+      
+      <form (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Información de la Publicación -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Descripción *
+          </label>
+          <textarea 
+            [(ngModel)]="formData.descripcion"
+            name="descripcion"
+            rows="4"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+            placeholder="Describe a la mascota y las circunstancias..."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Tipo de reporte *
+          </label>
+          <select 
+            [(ngModel)]="formData.estadoInicial"
+            name="estadoInicial"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent">
+            <option value="">Seleccionar tipo</option>
+            <option value="PERDIDO_PROPIO">Mascota Perdida (Propia)</option>
+            <option value="PERDIDO_AJENO">Mascota Perdida (Ajena)</option>
+          </select>
+        </div>
+
+        <!-- Información de la Mascota -->
+        <div class="border-t pt-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Información de la Mascota</h2>
+          
+          <!-- Selector de mascota existente (solo para PERDIDO_PROPIO) -->
+          <div *ngIf="formData.estadoInicial === 'PERDIDO_PROPIO' && mascotasDelUsuario.length > 0" class="mb-6">
+            <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <label class="flex items-center space-x-3 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  [(ngModel)]="usarMascotaExistente"
+                  name="usarMascotaExistente"
+                  class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+                <div>
+                  <span class="text-base font-semibold text-gray-800">Seleccionar una de mis mascotas</span>
+                  <p class="text-xs text-gray-600 mt-0.5">Tienes {{ mascotasDelUsuario.length }} mascota(s) registrada(s)</p>
+                </div>
+              </label>
+            </div>
+
+            <!-- Dropdown de mascotas existentes -->
+            <div *ngIf="usarMascotaExistente" class="mt-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Seleccionar Mascota *
+              </label>
+              <select 
+                (change)="onMascotaSelected($event)"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">Elige una mascota...</option>
+                <option *ngFor="let mascota of mascotasDelUsuario" [value]="mascota.id">
+                  {{ mascota.nombre }} ({{ mascota.tipo }}) - {{ mascota.raza }}
+                </option>
+              </select>
+
+              <!-- Card con info de mascota seleccionada -->
+              <div *ngIf="mascotaSeleccionada" class="mt-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h4 class="font-semibold text-green-900 mb-2 flex items-center">
+                  <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  Mascota Seleccionada
+                </h4>
+                <div class="grid grid-cols-2 gap-2 text-sm text-green-800">
+                  <div><strong>Nombre:</strong> {{ mascotaSeleccionada.nombre }}</div>
+                  <div><strong>Tipo:</strong> {{ mascotaSeleccionada.tipo }}</div>
+                  <div><strong>Raza:</strong> {{ mascotaSeleccionada.raza }}</div>
+                  <div><strong>Color:</strong> {{ mascotaSeleccionada.color }}</div>
+                  <div><strong>Tamaño:</strong> {{ mascotaSeleccionada.tamano }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulario de nueva mascota -->
+          <div *ngIf="!usarMascotaExistente">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Nombre *
+              </label>
+              <input 
+                [(ngModel)]="formData.nombreMascota"
+                name="nombreMascota"
+                type="text"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                placeholder="Nombre de la mascota">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Especie
+              </label>
+              <select 
+                [(ngModel)]="formData.especieMascota"
+                name="especieMascota"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent">
+                <option value="">Seleccionar</option>
+                <option value="PERRO">Perro</option>
+                <option value="GATO">Gato</option>
+                <option value="OTRO">Otro</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Raza
+              </label>
+              <input 
+                [(ngModel)]="formData.razaMascota"
+                name="razaMascota"
+                type="text" 
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                placeholder="Raza">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Color
+              </label>
+              <input 
+                [(ngModel)]="formData.colorMascota"
+                name="colorMascota"
+                type="text" 
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                placeholder="Color">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Tamaño
+              </label>
+              <select 
+                [(ngModel)]="formData.tamanioMascota"
+                name="tamanioMascota"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent">
+                <option value="">Seleccionar</option>
+                <option value="PEQUENO">Pequeño</option>
+                <option value="MEDIANO">Mediano</option>
+                <option value="GRANDE">Grande</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Sexo
+              </label>
+              <select 
+                [(ngModel)]="formData.sexoMascota"
+                name="sexoMascota"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent">
+                <option value="">Seleccionar</option>
+                <option value="MACHO">Macho</option>
+                <option value="HEMBRA">Hembra</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Señas Particulares
+            </label>
+            <textarea 
+              [(ngModel)]="formData.senasParticularMascota"
+              name="senasParticularMascota"
+              rows="2"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+              placeholder="Cualquier característica distintiva..."></textarea>
+          </div>
+          </div>
+
+          <!-- Fotos de la Mascota (solo para mascotas NUEVAS) -->
+          <div *ngIf="!usarMascotaExistente" class="mt-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Fotos de la Mascota *
+            </label>
+            <div class="mt-2">
+              <label class="flex items-center justify-center w-full px-4 py-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:border-gray-400 transition-colors">
+                <div class="space-y-2 text-center">
+                  <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <div class="text-sm text-gray-600">
+                    <span class="font-semibold">Clic para subir fotos</span> o arrastra aquí
+                  </div>
+                  <p class="text-xs text-gray-500">PNG, JPG, GIF hasta 10MB</p>
+                </div>
+                <input 
+                  type="file" 
+                  class="hidden" 
+                  accept="image/*" 
+                  multiple
+                  (change)="onFileSelected($event)">
+              </label>
+            </div>
+
+            <!-- Preview de fotos -->
+            <div *ngIf="previewUrls.length > 0" class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div *ngFor="let url of previewUrls; let i = index" class="relative group">
+                <img [src]="url" class="w-full h-32 object-cover rounded-lg border-2 border-gray-200">
+                <button 
+                  type="button"
+                  (click)="removePhoto(i)"
+                  class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ubicación -->
+        <div class="border-t pt-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Ubicación *</h2>
+          
+          <button 
+            type="button"
+            (click)="toggleMap()"
+            class="w-full mb-4 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            {{ showMap ? 'Ocultar Mapa' : 'Seleccionar en el Mapa' }}
+          </button>
+
+          <div *ngIf="showMap" class="mb-4">
+            <app-interactive-map 
+              (locationSelected)="onLocationSelected($event)">
+            </app-interactive-map>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Ciudad
+              </label>
+              <input 
+                [(ngModel)]="formData.ciudad"
+                name="ciudad"
+                type="text" 
+                readonly
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                placeholder="Se completará automáticamente">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Barrio
+              </label>
+              <input 
+                [(ngModel)]="formData.barrio"
+                name="barrio"
+                type="text" 
+                readonly
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                placeholder="Se completará automáticamente">
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="flex gap-4 pt-4">
+          <button 
+            type="submit"
+            [disabled]="isSubmitting"
+            class="flex-1 bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+            {{ isSubmitting ? 'Publicando...' : 'Publicar Reporte' }}
+          </button>
+          <button 
+            type="button"
+            (click)="cancel()"
+            [disabled]="isSubmitting"
+            class="px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
