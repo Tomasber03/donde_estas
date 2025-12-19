@@ -4,7 +4,12 @@ import { DashboardComponent } from './features/home/dashboard.component';
 import { DetallePublicacionComponent } from './features/publicationDetail/detalle-publicacion.component';
 import { LoginComponent } from './features/login/login.component';
 import { ProfileComponent } from './features/profile/profile.component';
+<<<<<<< HEAD
 import { CreatePublicationComponent } from './features/createPublication/create-publication.component';
+=======
+import { AvistamientoComponent } from './features/avistamiento/avistamiento.component';
+import { DetalleAvistamientoComponent } from './features/avistamiento/detalleAvistamiento.component';
+>>>>>>> avistamientos
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -14,6 +19,11 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] }, // Requiere autenticación
   { path: 'publicacion/:id', component: DetallePublicacionComponent }, // Sin authGuard - acceso público
+<<<<<<< HEAD
   { path: 'crear-publicacion', component: CreatePublicationComponent, canActivate: [authGuard] }, // Requiere autenticación
+=======
+  { path: 'avistamiento', component: AvistamientoComponent }, // Formulario para crear avistamiento
+  { path: 'avistamiento/:id', component: DetalleAvistamientoComponent }, // Detalle de avistamiento
+>>>>>>> avistamientos
   { path: '**', redirectTo: '/home' }
 ];
