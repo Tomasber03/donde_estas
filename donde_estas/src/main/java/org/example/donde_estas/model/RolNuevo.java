@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "rol")
+@Table(name = "roles")
 public class RolNuevo {
     private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
     private String nombre;

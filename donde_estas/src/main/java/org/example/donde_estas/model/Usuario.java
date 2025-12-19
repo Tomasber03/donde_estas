@@ -89,7 +89,7 @@ public class Usuario {
 
     public Usuario() {
         puntos = 0;
-        this.rol = new UsuarioPublico();
+
     }
 
     public void agregarPublicacion(Publicacion pub){
