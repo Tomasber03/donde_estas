@@ -24,7 +24,12 @@ public class PublicacionController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody PublicacionDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(publicacionService.persist(dto));
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(publicacionService.persist(dto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")

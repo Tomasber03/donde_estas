@@ -26,11 +26,11 @@ public class PublicacionService {
     private UbicacionService ubicacionService;
 
     public List<PublicacionDTO> findAll() {
-        // cast into list of dtos
-        return publicacionRepository.findAll().stream().map(p -> new PublicacionDTO(p)).toList();
+        return publicacionRepository.findAllWithFotos().stream().map(p -> new PublicacionDTO(p)).toList();
     }
+    
     public PublicacionDTO findById(Long id) {
-        return new PublicacionDTO(publicacionRepository.findById(id).orElseThrow(EntityNotFoundException::new));
+        return new PublicacionDTO(publicacionRepository.findByIdWithFotos(id).orElseThrow(EntityNotFoundException::new));
     }
 
     /*
@@ -40,42 +40,79 @@ public class PublicacionService {
      */
     @Transactional
     public PublicacionDTO persist(PublicacionDTO dto) {
-        Publicacion publicacionNueva = new Publicacion(dto);
-        if (dto.getUbicacion() == null)
-        {
+        Publicacion publicacionNueva = new Publicacion();
+        publicacionNueva.setActivo(dto.isActivo());
+        publicacionNueva.setEstadoInicial(dto.getEstadoInicial());
+        publicacionNueva.setDescripcion(dto.getDescripcion());
+        publicacionNueva.setFechaInicial(java.time.LocalDateTime.now());
+        
+        // Procesar Ubicacion
+        if (dto.getUbicacionDTO() != null) {
+            Ubicacion ubicacion = new Ubicacion();
+            ubicacion.setCiudad(dto.getUbicacionDTO().getCiudad());
+            ubicacion.setBarrio(dto.getUbicacionDTO().getBarrio());
+            ubicacion.setLatitud(dto.getUbicacionDTO().getLatitud());
+            ubicacion.setLongitud(dto.getUbicacionDTO().getLongitud());
+            publicacionNueva.setUbicacion(ubicacion);
+        } else if (dto.getUbicacion() != null) {
+            if (dto.getUbicacion().getId() == null) {
+                publicacionNueva.setUbicacion(dto.getUbicacion());
+            } else {
+                Ubicacion ubicacionPersistida = ubicacionService.findById(dto.getUbicacion().getId());
+                publicacionNueva.setUbicacion(ubicacionPersistida);
+            }
+        } else {
             throw new EntityNotFoundException("La ubicacion es obligatoria");
         }
-        if (dto.getUbicacion().getId() == null) {
-            publicacionNueva.setUbicacion(dto.getUbicacion());
-        }
-        else {
-            Ubicacion ubicacionPersistida = ubicacionService.findById(dto.getUbicacion().getId());
-            publicacionNueva.setUbicacion(ubicacionPersistida);
-        }
-        if (dto.getMascota() == null)
-        {
+        
+        // Procesar Mascota
+        Mascota mascotaFinal;
+        if (dto.getMascotaDTO() != null) {
+            if (dto.getMascotaDTO().getId() != null) {
+                // Usar mascota existente
+                mascotaFinal = mascotaService.findById(dto.getMascotaDTO().getId());
+            } else {
+                // Crear nueva mascota con fotos
+                Mascota nuevaMascota = new Mascota();
+                nuevaMascota.setNombre(dto.getMascotaDTO().getNombre());
+                nuevaMascota.setRaza(dto.getMascotaDTO().getRaza());
+                nuevaMascota.setColor(dto.getMascotaDTO().getColor());
+                nuevaMascota.setTamano(dto.getMascotaDTO().getTamano());
+                nuevaMascota.setTipo(dto.getMascotaDTO().getTipo());
+                
+                // Agregar fotos a la mascota nueva
+                if (dto.getFotosDTO() != null && !dto.getFotosDTO().isEmpty()) {
+                    for (var fotoDTO : dto.getFotosDTO()) {
+                        Foto foto = new Foto();
+                        foto.setNombre(fotoDTO.getNombre());
+                        foto.setUrl(fotoDTO.getUrl());
+                        foto.setDescripcion(fotoDTO.getDescripcion());
+                        foto.setFechaCreacion(java.time.LocalDateTime.now());
+                        foto.setEsDePublicacion(false);
+                        nuevaMascota.addFoto(foto);
+                    }
+                }
+                mascotaFinal = nuevaMascota;
+            }
+        } else if (dto.getMascota() != null) {
+            if (dto.getMascota().getId() == null) {
+                mascotaFinal = dto.getMascota();
+            } else {
+                mascotaFinal = mascotaService.findById(dto.getMascota().getId());
+            }
+        } else {
             throw new EntityNotFoundException("La mascota es obligatoria");
         }
-        if (dto.getMascota().getId() == null) {
-            publicacionNueva.setMascota(dto.getMascota());
-        }
-        else
-        {
-            Mascota mascotaPersistida = mascotaService.findById(dto.getMascota().getId());
-            publicacionNueva.setMascota(mascotaPersistida);
-        }
+        
+        publicacionNueva.setMascota(mascotaFinal);
+        
+        // Procesar Usuario
         if (dto.getUsuarioId() == null) {
             throw new EntityNotFoundException("El id del usuario es obligatorio");
         }
-        else {
-            Usuario usuarioPersistido = usuarioService.findById(dto.getUsuarioId());
-            publicacionNueva.setUsuario(usuarioPersistido);
-        }
-        if (dto.getFotos() != null) {
-            List<Foto> fotos = dto.getFotos();
-            fotos.forEach(f -> f.setPublicacion(publicacionNueva));
-            publicacionNueva.setFotos(fotos);
-        }
+        Usuario usuarioPersistido = usuarioService.findById(dto.getUsuarioId());
+        publicacionNueva.setUsuario(usuarioPersistido);
+        
         publicacionHelperService.validarPublicacionDuplicada(publicacionNueva);
         return new PublicacionDTO(publicacionRepository.save(publicacionNueva));
     }

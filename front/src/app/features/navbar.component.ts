@@ -49,6 +49,18 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  handleNavClick(label: string) {
+    if (label === 'Inicio') {
+      this.router.navigate(['/home']);
+    } else if (label === 'Reportar Mascota') {
+      this.router.navigate(['/crear-publicacion']);
+    } else if (label === 'Mis Reportes') {
+      this.router.navigate(['/mis-reportes']);
+    } else if (label === 'Ranking') {
+      this.router.navigate(['/ranking']);
+    }
+  }
+
   goToProfile() {
     this.showUserMenu = false;
     this.router.navigate(['/profile']);

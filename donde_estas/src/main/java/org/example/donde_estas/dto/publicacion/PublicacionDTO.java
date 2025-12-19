@@ -24,10 +24,13 @@ public class PublicacionDTO {
     private LocalDateTime fechaInicial;
     private LocalDateTime fechaModificacion;
     private Mascota mascota;
+    private MascotaDTO mascotaDTO;
     private Ubicacion ubicacion;
+    private UbicacionDTO ubicacionDTO;
     private String descripcion;
     private Long usuarioId;
     private List<Foto> fotos;
+    private List<FotoDTO> fotosDTO;
 
     // si querés, datos “resumidos” de mascota y ubicación, pero no el usuario
 

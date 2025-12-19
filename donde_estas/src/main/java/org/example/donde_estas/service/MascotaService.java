@@ -47,5 +47,8 @@ public class MascotaService {
     public List<Mascota> findByTipo(String tipo){
         return  mascotaRepo.findByTipo(tipo);
     }
-
+    
+    public List<Mascota> findByUsuarioId(Long usuarioId){
+        return mascotaRepo.findByUsuarioId(usuarioId);
+    }
 }

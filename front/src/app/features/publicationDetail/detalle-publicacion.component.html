@@ -13,9 +13,16 @@
       <div class="lg:col-span-2 space-y-6">
         
         <div class="w-full h-96 bg-gray-200 rounded-2xl overflow-hidden shadow-sm">
-          <img [src]="'/assets/images/' + publicacion.fotos[0].nombre" 
+          <img *ngIf="publicacion.mascota.fotos && publicacion.mascota.fotos.length > 0" 
+               [src]="publicacion.mascota.fotos[0].url" 
                [alt]="publicacion.mascota.nombre" 
                class="w-full h-full object-cover">
+          <div *ngIf="!publicacion.mascota.fotos || publicacion.mascota.fotos.length === 0" 
+               class="w-full h-full bg-gray-200 flex items-center justify-center">
+            <svg class="w-24 h-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
@@ -49,12 +56,12 @@
               <p class="font-medium text-gray-900">{{ publicacion.mascota.tamano }}</p>
             </div>
             <div>
-              <p class="text-sm text-gray-500 mb-1">Edad</p>
-              <p class="font-medium text-gray-900">{{ publicacion.mascota.edad }} años</p>
-            </div>
-            <div>
               <p class="text-sm text-gray-500 mb-1">Raza</p>
               <p class="font-medium text-gray-900">{{ publicacion.mascota.raza }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Tipo</p>
+              <p class="font-medium text-gray-900">{{ publicacion.mascota.tipo }}</p>
             </div>
           </div>
         </div>

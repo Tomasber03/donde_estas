@@ -69,10 +69,10 @@ export class DashboardComponent implements OnInit {
     }
     const lowerSearch = this.stringBusqueda.toLowerCase();
     this.filteredPetsList = this.publicaciones.filter(publicacion =>
-      publicacion.mascota.nombre.toLowerCase().startsWith(lowerSearch) ||
-      publicacion.mascota.raza.toLowerCase().startsWith(lowerSearch) ||
-      publicacion.ubicacion.ciudad.toLowerCase().startsWith(lowerSearch) || 
-      publicacion.ubicacion.barrio.toLowerCase().startsWith(lowerSearch)  
+      (publicacion.mascota?.nombre?.toLowerCase() || '').startsWith(lowerSearch) ||
+      (publicacion.mascota?.raza?.toLowerCase() || '').startsWith(lowerSearch) ||
+      (publicacion.ubicacion?.ciudad?.toLowerCase() || '').startsWith(lowerSearch) || 
+      (publicacion.ubicacion?.barrio?.toLowerCase() || '').startsWith(lowerSearch)  
     );
     this.filterType();
     this.filterByStatus(this.selectedTab)

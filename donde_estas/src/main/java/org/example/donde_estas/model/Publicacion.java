@@ -35,7 +35,7 @@ public class Publicacion {
     @com.fasterxml.jackson.annotation.JsonBackReference
     private Usuario usuario;
 
-    @Column(name = "estaActivo")
+    @Column(name = "esta_activo")
     private boolean activo = true;
     private Estado estadoInicial;
     private Estado estadoCierre;
