@@ -2,25 +2,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MapComponent } from '../publicationDetail/map.component';
-
-interface Avistamiento {
-  id: number;
-  fechaCreacion: string;
-  comentario: string;
-  usuarioId: number;
-  publicacionId: number;
-  ubicacion: {
-    barrio: string;
-    ciudad: string;
-    latitud: string;
-    longitud: string;
-  };
-  fotos: Array<{
-    id: number;
-    nombre: string;
-    fechaCreacion: string;
-  }>;
-}
+import { AvistamientoService } from '../../services/avistamiento.service';
+import { Avistamiento } from '../models.model';
 
 @Component({
   selector: 'app-detalle-avistamiento',
@@ -37,7 +20,8 @@ export class DetalleAvistamientoComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private avistamientoService: AvistamientoService
   ) {}
 
   ngOnInit(): void {
@@ -54,49 +38,20 @@ export class DetalleAvistamientoComponent implements OnInit {
     this.loading = true;
     console.log('Cargando avistamiento con ID:', id);
     
-    // TODO: Implementar servicio para obtener el avistamiento del backend
-    // Por ahora, datos de ejemplo:
-    setTimeout(() => {
-      console.log('Datos cargados');
-      this.avistamiento = {
-        id: id,
-        fechaCreacion: '2025-12-18T10:30:00',
-        comentario: 'Vi a esta mascota cerca del parque. Parecía estar asustada y buscaba algo. Tenía un collar rojo y respondía al nombre que le llamaban unos niños.',
-        usuarioId: 1,
-        publicacionId: 1,
-        ubicacion: {
-          barrio: 'Centro',
-          ciudad: 'Montevideo',
-          latitud: '-34.9011',
-          longitud: '-56.1645'
-        },
-        fotos: [
-          {
-            id: 1,
-            nombre: 'avistamiento1.jpg',
-            fechaCreacion: '2025-12-18T10:30:00'
-          }
-        ]
-      };
-      this.loading = false;
-      this.cdr.detectChanges();
-      console.log('Estado actualizado:', { avistamiento: this.avistamiento, loading: this.loading });
-    }, 500);
-
-    /* Implementación real con el servicio:
     this.avistamientoService.getAvistamiento(id).subscribe({
       next: (data) => {
+        console.log('Avistamiento recibido:', data);
         this.avistamiento = data;
         this.loading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al cargar avistamiento', err);
+        alert('No se pudo cargar el avistamiento');
         this.loading = false;
         this.router.navigate(['/home']);
       }
     });
-    */
   }
 
   volver(): void {

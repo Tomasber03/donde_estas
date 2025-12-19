@@ -40,9 +40,12 @@ export class DetallePublicacionComponent implements OnInit {
 
   this.publicacionService.getPublicacion(id).subscribe({
     next: (data: any) => {
-      console.log(data)
+      console.log('Datos de la publicación:', data);
       this.publicacion = data;
-      console.log(this.publicacion)
+      
+      if (this.publicacion) {
+        console.log('Avistamientos:', this.publicacion.avistamientos);
+      }
       
       // --- CORRECCIÓN: Llamamos al usuario SOLO cuando ya tenemos la publicación ---
       if (this.publicacion && this.publicacion.usuarioId) {
@@ -81,9 +84,25 @@ export class DetallePublicacionComponent implements OnInit {
     this.location.back();
   }
 
+  verAvistamiento(avistamientoId: number) {
+    this.router.navigate(['/avistamiento', avistamientoId]);
+  }
+
   reportarAvistamiento() {
     if (this.publicacion) {
-      this.router.navigate(['/avistamiento/nuevo', this.publicacion.id]);
+      const queryParams: any = { 
+        publicacionId: this.publicacion.id 
+      };
+      
+      // Agregar coordenadas si la publicación tiene ubicación
+      if (this.publicacion.ubicacion) {
+        queryParams.lat = this.publicacion.ubicacion.latitud;
+        queryParams.lng = this.publicacion.ubicacion.longitud;
+      }
+      
+      this.router.navigate(['/avistamiento'], {
+        queryParams: queryParams
+      });
     }
   }
 

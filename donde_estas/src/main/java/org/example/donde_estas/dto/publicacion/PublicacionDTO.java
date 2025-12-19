@@ -1,5 +1,6 @@
 package org.example.donde_estas.dto.publicacion;
 
+import org.example.donde_estas.dto.avistamiento.AvistamientoDTO;
 import org.example.donde_estas.model.Foto;
 import org.example.donde_estas.model.Mascota;
 import org.example.donde_estas.model.Publicacion;
@@ -12,6 +13,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 @Data
 @Getter
 @Setter
@@ -30,8 +32,7 @@ public class PublicacionDTO {
     private String descripcion;
     private Long usuarioId;
     private List<Foto> fotos;
-    private List<FotoDTO> fotosDTO;
-
+    private List<FotoDTO> fotosDTO;    private List<AvistamientoDTO> avistamientos;
     // si querés, datos “resumidos” de mascota y ubicación, pero no el usuario
 
     public PublicacionDTO(Publicacion pub) {
@@ -46,6 +47,11 @@ public class PublicacionDTO {
         this.mascota = pub.getMascota();
         this.ubicacion = pub.getUbicacion();
         this.fotos = pub.getFotos();
+        this.avistamientos = pub.getAvistamientos() != null 
+            ? pub.getAvistamientos().stream()
+                .map(AvistamientoDTO::new)
+                .collect(Collectors.toList())
+            : null;
 
     }
     public PublicacionDTO() {

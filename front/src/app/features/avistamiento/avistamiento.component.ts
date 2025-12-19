@@ -1,8 +1,10 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { EditableMapComponent, MapLocation } from './editable-map.component';
+import { AvistamientoService } from '../../services/avistamiento.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-avistamiento',
@@ -11,17 +13,43 @@ import { EditableMapComponent, MapLocation } from './editable-map.component';
   templateUrl: './avistamiento.component.html',
   styleUrls: ['./avistamiento.component.css']
 })
-export class AvistamientoComponent {
+export class AvistamientoComponent implements OnInit {
   comentario: string = '';
   selectedFile: File | null = null;
   photoPreview: string | null = null;
   selectedFileName: string = '';
   ubicacion: MapLocation | null = null;
+  publicacionId: number | null = null;
+  isSubmitting: boolean = false;
+  
+  // Coordenadas para centrar el mapa
+  mapLat: number = -34.9011; // Coordenadas por defecto
+  mapLng: number = -56.1645;
 
   constructor(
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
+    private avistamientoService: AvistamientoService,
+    private authService: AuthService
   ) {}
+
+  ngOnInit(): void {
+    // Obtener el ID de la publicación y las coordenadas desde los query params
+    this.route.queryParams.subscribe(params => {
+      if (params['publicacionId']) {
+        this.publicacionId = Number(params['publicacionId']);
+        console.log('ID de publicación recibido:', this.publicacionId);
+      }
+      
+      // Si vienen coordenadas, usarlas para centrar el mapa
+      if (params['lat'] && params['lng']) {
+        this.mapLat = Number(params['lat']);
+        this.mapLng = Number(params['lng']);
+        console.log('Coordenadas de la publicación:', this.mapLat, this.mapLng);
+      }
+    });
+  }
 
   onPhotoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -56,22 +84,66 @@ export class AvistamientoComponent {
 
   isFormValid(): boolean {
     return this.comentario.trim().length > 0 && 
-           this.selectedFile !== null && 
            this.ubicacion !== null;
   }
 
   onSubmit(): void {
-    if (this.isFormValid()) {
-      // Aquí implementarás el envío del formulario al backend
-      console.log('Formulario enviado:', {
-        comentario: this.comentario,
-        foto: this.selectedFile,
-        ubicacion: this.ubicacion
-      });
+    if (this.isFormValid() && !this.isSubmitting) {
+      this.isSubmitting = true;
+
+      const userId = this.authService.getCurrentUserId();
       
-      // TODO: Implementar servicio para enviar datos al backend
-      alert('Avistamiento reportado exitosamente');
-      this.resetForm();
+      if (!userId) {
+        alert('Debes iniciar sesión para reportar un avistamiento');
+        this.router.navigate(['/login']);
+        this.isSubmitting = false;
+        return;
+      }
+
+      if (!this.publicacionId) {
+        alert('Error: No se encontró la publicación');
+        this.isSubmitting = false;
+        return;
+      }
+
+      // Preparar los datos para enviar
+      const avistamientoData = {
+        comentario: this.comentario,
+        usuarioId: userId,
+        publicacionId: this.publicacionId,
+        ubicacion: {
+          ciudad: 'Ciudad',  // TODO: Obtener de algún servicio de geolocalización
+          barrio: 'Barrio',  // TODO: Obtener de algún servicio de geolocalización
+          latitud: this.ubicacion!.lat.toString(),
+          longitud: this.ubicacion!.lng.toString()
+        },
+        fotos: this.photoPreview ? [{
+          nombre: this.selectedFileName || 'avistamiento.jpg',
+          url: this.photoPreview,
+          descripcion: 'Foto del avistamiento'
+        }] : []
+      };
+
+      console.log('Enviando avistamiento:', avistamientoData);
+
+      this.avistamientoService.createAvistamiento(avistamientoData).subscribe({
+        next: (response) => {
+          console.log('Avistamiento creado exitosamente:', response);
+          alert('Avistamiento reportado exitosamente');
+          
+          // Redirigir a la publicación
+          if (this.publicacionId) {
+            this.router.navigate(['/publicacion', this.publicacionId]);
+          } else {
+            this.router.navigate(['/home']);
+          }
+        },
+        error: (error) => {
+          console.error('Error al crear avistamiento:', error);
+          alert('Error al reportar el avistamiento. Por favor, intenta nuevamente.');
+          this.isSubmitting = false;
+        }
+      });
     }
   }
 

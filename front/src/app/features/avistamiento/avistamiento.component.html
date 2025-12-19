@@ -50,8 +50,8 @@
     <div class="form-section">
       <h2 class="section-title">Ubicación del Avistamiento</h2>
       <app-editable-map 
-        [initialLat]="-34.9011" 
-        [initialLng]="-56.1645"
+        [initialLat]="mapLat" 
+        [initialLng]="mapLng"
         (locationSelected)="onLocationSelected($event)">
       </app-editable-map>
       <p class="location-hint" *ngIf="!ubicacion">

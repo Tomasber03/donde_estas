@@ -35,6 +35,7 @@ export interface Publicacion {
   ubicacion: Ubicacion;
   usuarioId: number; 
   fotos : Foto[];
+  avistamientos: Avistamiento[];
 }
 
 export interface Avistamiento {

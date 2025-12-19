@@ -78,6 +78,14 @@ export class AuthService {
   }
 
   /**
+   * Obtiene el ID del usuario actual
+   */
+  getCurrentUserId(): number | null {
+    const user = this.getCurrentUser();
+    return user ? user.userId : null;
+  }
+
+  /**
    * Valida el token con el backend
    */
   validateToken(): Observable<boolean> {

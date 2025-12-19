@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class AvistamientoDTO {
+    private Long id;
     private LocalDateTime fechaCreacion;
     private String comentario;
     private Long usuarioId;
@@ -24,6 +25,7 @@ public class AvistamientoDTO {
     public AvistamientoDTO() {}
 
     public AvistamientoDTO(Avistamiento avistamiento) {
+        this.id = avistamiento.getId();
         this.fechaCreacion = avistamiento.getFechaCreacion();
         this.comentario = avistamiento.getComentario();
         if (avistamiento.getUsuario() != null) {
