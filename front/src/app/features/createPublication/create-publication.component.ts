@@ -6,6 +6,7 @@ import { InteractiveMapComponent, MapLocation } from './interactive-map.componen
 import { PublicacionService } from '../../services/PublicactionService.service';
 import { AuthService } from '../../services/auth.service';
 import { MascotaService, Mascota } from '../../services/mascota.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-create-publication',
@@ -45,7 +46,8 @@ export class CreatePublicationComponent implements OnInit {
     private router: Router,
     private publicacionService: PublicacionService,
     private authService: AuthService,
-    private mascotaService: MascotaService
+    private mascotaService: MascotaService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -103,10 +105,12 @@ export class CreatePublicationComponent implements OnInit {
         const reader = new FileReader();
         reader.onload = (e: any) => {
           this.previewUrls.push(e.target.result);
+          this.cdr.detectChanges();
         };
         reader.readAsDataURL(file);
       }
     }
+    
   }
 
   removePhoto(index: number): void {
