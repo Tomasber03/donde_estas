@@ -55,7 +55,7 @@ public class UsuarioService {
     }
     public Usuario updateRol(Long id, Rol rol)
     {
-        Usuario usuarioPersistido = usuarioRepo.findById(id).orElse(null);
+        Usuario usuarioPersistido = usuarioRepo.findById(id).orElseThrow(EntityNotFoundException::new);
         if (usuarioPersistido == null)
             return null;
         usuarioPersistido.setRolPersistido(rol.getEnum());
@@ -64,7 +64,7 @@ public class UsuarioService {
     }
     public Usuario addPuntos(Long id, int puntos)
     {
-        Usuario usuarioPersistido = usuarioRepo.findById(id).orElse(null);
+        Usuario usuarioPersistido = usuarioRepo.findById(id).orElseThrow(EntityNotFoundException::new);
         if (usuarioPersistido == null)
             return null;
         usuarioPersistido.setPuntos(usuarioPersistido.getPuntos() + puntos);
@@ -82,11 +82,11 @@ public class UsuarioService {
         return cargarRoles(usuarios);
     }
     public Usuario findByEmail(String email){
-        Usuario usuario = usuarioRepo.findByEmail(email).orElse(null);
+        Usuario usuario = usuarioRepo.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         return cargarRol(usuario);
     }
     public Usuario findByEmailAndPass(String email, String pass){
-        Usuario usuario = usuarioRepo.findByEmail(email).orElse(null);
+        Usuario usuario = usuarioRepo.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         if (encryptService.verifyPassword(pass, usuario.getClave()))
             return cargarRol(usuario);
         else

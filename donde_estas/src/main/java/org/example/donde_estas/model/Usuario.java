@@ -53,6 +53,9 @@ public class Usuario {
 
     @Transient
     private Rol rol;
+    @JoinColumn(name = "rol_id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private RolNuevo rolNuevo;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @com.fasterxml.jackson.annotation.JsonManagedReference
