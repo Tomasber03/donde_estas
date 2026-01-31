@@ -7,6 +7,7 @@ import org.apache.coyote.Response;
 import org.example.donde_estas.dto.publicacion.PublicacionDTO;
 import org.example.donde_estas.dto.publicacion.PublicacionModificadaDTO;
 import org.example.donde_estas.model.Publicacion;
+import org.example.donde_estas.model.Usuario;
 import org.example.donde_estas.service.AuthService;
 import org.example.donde_estas.service.PublicacionService;
 import org.example.donde_estas.service.RolService;
@@ -50,8 +51,10 @@ public class PublicacionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id, @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
-        if (!rolService.hasPermission(authService.getUserFromToken(token).getRolNuevo().getNombre(), "ELIMINAR_PUBLICACIONES")) {
-            System.out.println(authService.getUserFromToken(token).getRolNuevo().getNombre());
+        Usuario user = authService.getUserFromToken(token);
+        boolean isOwner = user.getId() == publicacionService.findById(id).getUsuarioId();
+        boolean hasPermission = rolService.hasPermission(user.getRolNuevo().getNombre(), "ELIMINAR_PUBLICACIONES");
+        if (!isOwner && !hasPermission) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permiso para eliminar publicaciones.");
         }   
         publicacionService.delete(id);
