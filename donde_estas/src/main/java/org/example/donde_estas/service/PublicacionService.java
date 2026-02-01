@@ -73,12 +73,7 @@ public class PublicacionService {
                 mascotaFinal = mascotaService.findById(dto.getMascotaDTO().getId());
             } else {
                 // Crear nueva mascota con fotos
-                Mascota nuevaMascota = new Mascota();
-                nuevaMascota.setNombre(dto.getMascotaDTO().getNombre());
-                nuevaMascota.setRaza(dto.getMascotaDTO().getRaza());
-                nuevaMascota.setColor(dto.getMascotaDTO().getColor());
-                nuevaMascota.setTamano(dto.getMascotaDTO().getTamano());
-                nuevaMascota.setTipo(dto.getMascotaDTO().getTipo());
+                Mascota nuevaMascota = new Mascota(dto.getMascotaDTO());
                 
                 // Agregar fotos a la mascota nueva
                 if (dto.getFotosDTO() != null && !dto.getFotosDTO().isEmpty()) {

@@ -9,6 +9,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.example.donde_estas.dto.publicacion.MascotaDTO;
+
 @Getter
 @Setter
 @Entity
@@ -25,6 +27,7 @@ public class Mascota {
     private String color;
     private String tamano;
     private String tipo;
+    private String sexo;
     
     @JsonManagedReference
     @OneToMany(mappedBy = "mascota", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -35,6 +38,16 @@ public class Mascota {
         this.raza = raza;
         this.color = color;
         this.tamano = tamano;
+    }
+    public Mascota(MascotaDTO mascota)
+    {
+        this.id = mascota.getId();
+        this.nombre = mascota.getNombre();
+        this.raza = mascota.getRaza();
+        this.color = mascota.getColor();
+        this.tamano = mascota.getTamano();
+        this.tipo = mascota.getTipo();
+        this.sexo = mascota.getSexo();
     }
     
     public Mascota() {

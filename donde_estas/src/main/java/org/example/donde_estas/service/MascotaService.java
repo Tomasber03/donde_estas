@@ -30,6 +30,7 @@ public class MascotaService {
         mascotaPersistido.setRaza(mascota.getRaza());
         mascotaPersistido.setTamano(mascota.getTamano());
         mascotaPersistido.setColor(mascota.getColor());
+        mascotaPersistido.setSexo(mascota.getSexo());
         mascotaPersistido.getFotos().clear();
         mascotaPersistido.getFotos().addAll(mascota.getFotos());
         return mascotaRepo.save(mascotaPersistido);

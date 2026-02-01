@@ -19,6 +19,7 @@ public class MascotaConFotosDTO {
     private String color;
     private String tamano;
     private String tipo;
+    private String sexo;
     private List<FotoDTO> fotos;
     
     public MascotaConFotosDTO() {
@@ -31,6 +32,7 @@ public class MascotaConFotosDTO {
         this.color = mascota.getColor();
         this.tamano = mascota.getTamano();
         this.tipo = mascota.getTipo();
+        this.sexo = mascota.getSexo();
         
         if (mascota.getFotos() != null) {
             this.fotos = mascota.getFotos().stream()

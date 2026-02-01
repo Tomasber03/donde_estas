@@ -5,6 +5,7 @@ export interface Mascota {
   raza: string;
   color: string;
   tamano: string; // Grande, Mediano...
+  sexo: string; // Macho, Hembra
   edad?: string; // Joven, Adulto...
   fotos?: Foto[]; // Fotos de la mascota
 }
