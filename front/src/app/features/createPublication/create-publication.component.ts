@@ -25,7 +25,6 @@ export class CreatePublicationComponent implements OnInit {
     colorMascota: '',
     tamanioMascota: '',
     sexoMascota: '',
-    senasParticularMascota: '',
     ciudad: '',
     barrio: '',
     latitud: '',
@@ -216,9 +215,8 @@ export class CreatePublicationComponent implements OnInit {
         color: this.formData.colorMascota?.trim() || 'Sin especificar',
         tamano: this.formData.tamanioMascota || 'Sin especificar',
         tipo: this.formData.especieMascota || 'Sin especificar',
-        sexo: this.formData.sexoMascota || 'Sin especificar',
-        senasParticulares: this.formData.senasParticularMascota?.trim() || null
-      };
+        sexo: this.formData.sexoMascota || 'Sin especificar'      
+};
     }
 
     // Convertir fotos a Base64
