@@ -3,6 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+export interface FotoMascota {
+  id?: number;
+  nombre: string;
+  url?: string;
+  descripcion?: string;
+  fechaCreacion?: string;
+}
+
 export interface Mascota {
   id?: number;
   nombre: string;
@@ -10,6 +18,8 @@ export interface Mascota {
   color: string;
   tamano: string;
   tipo: string;
+  sexo: string;
+  fotos?: FotoMascota[];
 }
 
 @Injectable({ providedIn: 'root' })
