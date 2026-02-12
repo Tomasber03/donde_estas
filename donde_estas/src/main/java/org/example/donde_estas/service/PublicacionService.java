@@ -129,6 +129,20 @@ public class PublicacionService {
     public Publicacion update(PublicacionModificadaDTO publi){
         Publicacion publicacionPersist = publicacionHelperService.getPublicacionMascota(publi.getIdMascota());
         publicacionPersist.setDescripcion(publi.getDescripcion());
+        
+        // Actualizar ubicación si se proporciona
+        if (publi.getUbicacionDTO() != null) {
+            Ubicacion ubicacion = publicacionPersist.getUbicacion();
+            if (ubicacion == null) {
+                ubicacion = new Ubicacion();
+                publicacionPersist.setUbicacion(ubicacion);
+            }
+            ubicacion.setCiudad(publi.getUbicacionDTO().getCiudad());
+            ubicacion.setBarrio(publi.getUbicacionDTO().getBarrio());
+            ubicacion.setLatitud(publi.getUbicacionDTO().getLatitud());
+            ubicacion.setLongitud(publi.getUbicacionDTO().getLongitud());
+        }
+        
         return publicacionRepository.save(publicacionPersist);
     }
     @Transactional

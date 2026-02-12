@@ -62,18 +62,49 @@ public class PublicacionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Long id, @Valid @RequestBody PublicacionModificadaDTO dto) {
+    public ResponseEntity<?> update(@PathVariable("id") Long id, @Valid @RequestBody PublicacionModificadaDTO dto, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Usuario user = authService.getUserFromToken(token);
+        boolean isOwner = user.getId().equals(publicacionService.findById(id).getUsuarioId());
+        boolean hasPermission = rolService.hasPermission(user.getRolNuevo().getNombre(), "EDITAR_PUBLICACIONES");
+        
+        if (!isOwner && !hasPermission) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permiso para editar esta publicación.");
+        }
+        
+        // Si no se proporciona idMascota, obtenerlo de la publicación existente
+        if (dto.getIdMascota() == null) {
+            PublicacionDTO publicacion = publicacionService.findById(id);
+            dto.setIdMascota(publicacion.getMascota().getId());
+        }
+        
         return ResponseEntity.status(HttpStatus.OK).body(publicacionService.update(dto));
     }
 
     // Acciones de negocio
     @PostMapping("/{id}/recuperado")
-    public ResponseEntity<?> marcarRecuperado(@PathVariable("id") Long id) {
+    public ResponseEntity<?> marcarRecuperado(@PathVariable("id") Long id, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Usuario user = authService.getUserFromToken(token);
+        boolean isOwner = user.getId().equals(publicacionService.findById(id).getUsuarioId());
+        
+        if (!isOwner) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Solo el dueño puede marcar la publicación como recuperada.");
+        }
+        
         return ResponseEntity.status(HttpStatus.OK).body(publicacionService.recuperado(id));
     }
 
     @PostMapping("/{id}/adoptado")
-    public ResponseEntity<?> marcarAdoptado(@PathVariable("id") Long id) {
+    public ResponseEntity<?> marcarAdoptado(@PathVariable("id") Long id, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Usuario user = authService.getUserFromToken(token);
+        boolean isOwner = user.getId().equals(publicacionService.findById(id).getUsuarioId());
+        
+        if (!isOwner) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Solo el dueño puede marcar la publicación como adoptada.");
+        }
+        
         return ResponseEntity.status(HttpStatus.OK).body(publicacionService.adoptado(id));
     }
 
