@@ -7,6 +7,7 @@ import { PublicacionService } from '../../services/PublicactionService.service';
 import { AuthService } from '../../services/auth.service';
 import { MascotaService, Mascota } from '../../services/mascota.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-create-publication',
@@ -46,7 +47,8 @@ export class CreatePublicationComponent implements OnInit {
     private publicacionService: PublicacionService,
     private authService: AuthService,
     private mascotaService: MascotaService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -256,8 +258,10 @@ export class CreatePublicationComponent implements OnInit {
       this.publicacionService.createPublicacion(publicacionDTO).subscribe({
         next: (response) => {
           console.log('✅ Publicación creada exitosamente:', response);
-          alert('Publicación creada exitosamente');
           this.isSubmitting = false;
+          
+          // Mostrar notificación global y redirigir inmediatamente
+          this.notificationService.showSuccess('¡Publicación creada exitosamente!');
           this.router.navigate(['/home']);
         },
         error: (error) => {

@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { NotificationService, Notification } from '../services/notification.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -9,14 +11,18 @@ import { AuthService } from '../services/auth.service';
   imports: [CommonModule, RouterLink],
   templateUrl: './navbar.component.html',
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   isAuthenticated: boolean = false;
   userName: string = '';
   showUserMenu: boolean = false;
+  notification: Notification | null = null;
+  private notificationSubscription?: Subscription;
 
   constructor(
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   navItems = [
@@ -31,6 +37,16 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit() {
     this.checkAuthentication();
+    this.notificationSubscription = this.notificationService.notification$.subscribe(notification => {
+      this.notification = notification;
+      this.cdr.detectChanges();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.notificationSubscription) {
+      this.notificationSubscription.unsubscribe();
+    }
   }
 
   checkAuthentication() {

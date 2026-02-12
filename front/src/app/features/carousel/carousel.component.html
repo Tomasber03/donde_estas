@@ -1,0 +1,89 @@
+<div class="carousel-container">
+  <div class="carousel-header">
+    <h2 class="carousel-title">Mis Mascotas</h2>
+  </div>
+
+  <!-- Estado de carga -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando mascotas...</p>
+  </div>
+
+  <!-- Estado vacío -->
+  <div *ngIf="!isLoading && mascotas.length === 0" class="empty-state">
+    <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+    </svg>
+    <h3>No tienes mascotas registradas</h3>
+    <p>Cuando publiques una mascota, aparecerá aquí</p>
+  </div>
+
+  <!-- Carrusel -->
+  <div *ngIf="!isLoading && mascotas.length > 0" class="carousel-wrapper">
+    <!-- Botón Anterior -->
+    <button 
+      class="carousel-btn carousel-btn-prev" 
+      [disabled]="!puedeRetroceder"
+      (click)="anterior()"
+      aria-label="Mascotas anteriores">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- Contenido del carrusel - Grid de 3 mascotas -->
+    <div class="carousel-grid">
+      <div 
+        *ngFor="let mascota of mascotasVisibles" 
+        class="carousel-item"
+        (click)="verDetalle(mascota.id)">
+        <!-- Imagen -->
+        <div class="carousel-image">
+          <img 
+            *ngIf="obtenerFoto(mascota)" 
+            [src]="obtenerFoto(mascota)" 
+            [alt]="mascota.nombre"
+            class="pet-image">
+          <div *ngIf="!obtenerFoto(mascota)" class="image-placeholder">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8.5 12c1.38 0 2.5-1.12 2.5-2.5S9.88 7 8.5 7 6 8.12 6 9.5 7.12 12 8.5 12zm7 0c1.38 0 2.5-1.12 2.5-2.5S16.88 7 15.5 7 13 8.12 13 9.5s1.12 2.5 2.5 2.5zm4 2c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm-15 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm7.5 1c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Información -->
+        <div class="carousel-info">
+          <h3 class="pet-name">{{ mascota.nombre }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón Siguiente -->
+    <button 
+      class="carousel-btn carousel-btn-next" 
+      [disabled]="!puedeAvanzar"
+      (click)="siguiente()"
+      aria-label="Siguientes mascotas">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+
+    <!-- Indicadores -->
+    <div class="carousel-indicators" *ngIf="totalPaginas > 1">
+      <button 
+        *ngFor="let _ of [].constructor(totalPaginas); let i = index"
+        class="indicator"
+        [class.active]="i === currentIndex"
+        (click)="irAIndice(i)"
+        [attr.aria-label]="'Ir a página ' + (i + 1)">
+      </button>
+    </div>
+
+    <!-- Contador -->
+    <div class="carousel-counter">
+      <span>{{ currentIndex + 1 }} / {{ totalPaginas }}</span>
+    </div>
+  </div>
+</div>

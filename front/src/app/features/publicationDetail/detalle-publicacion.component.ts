@@ -108,6 +108,13 @@ export class DetallePublicacionComponent implements OnInit {
 
   editarPublicacion() {
   }
+
+  editarMascota() {
+    if (this.publicacion && this.publicacion.mascota && this.publicacion.mascota.id) {
+      this.router.navigate(['/editar-mascota', this.publicacion.mascota.id]);
+    }
+  }
+
   eliminarPublicacion() {
     if (this.publicacion && this.publicacion.id) {
       this.publicacionService.deletePublicacion(this.publicacion.id).subscribe({
