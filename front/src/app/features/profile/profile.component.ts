@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserService, User } from '../../services/UserService.service';
+import { CarouselComponent } from '../carousel/carousel.component';
 
 interface UserProfile {
   nombre?: string;
@@ -18,7 +19,7 @@ interface UserProfile {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CarouselComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })

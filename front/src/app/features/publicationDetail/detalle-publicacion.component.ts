@@ -111,6 +111,12 @@ export class DetallePublicacionComponent implements OnInit {
       this.router.navigate(['/editar-publicacion', this.publicacion.id]);
     }
   }
+
+  editarMascota() {
+    if (this.publicacion && this.publicacion.mascota && this.publicacion.mascota.id) {
+      this.router.navigate(['/editar-mascota', this.publicacion.mascota.id]);
+    }
+  }
   
   marcarComoRecuperado() {
     if (!this.esPropia) {
