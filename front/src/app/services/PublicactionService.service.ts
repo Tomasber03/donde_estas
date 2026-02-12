@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Publicacion } from '../features/models.model';
 
 /*
 ejemplo de publicacion 
@@ -33,10 +34,6 @@ ejemplo de publicacion
   }
 ]
 */
-export interface Mascota {id: number; nombre: string; raza: string; color: string; tamano: string; tipo: string;}
-export interface Ubicacion {id: number; ciudad: string; barrio: string; latitud: string; longitud: string;}
-
-export interface Publicacion {id: number; mascota: Mascota; avistamientos: any[]; activo: boolean; estadoInicial: string; estadoCierre: string; fechaInicial: string; fechaModificacion: string; ubicacion: Ubicacion; descripcion: string;}
 @Injectable({ providedIn: 'root' })
 export class PublicacionService {
   private apiUrl = 'http://localhost:8080/publicacion';
@@ -86,6 +83,24 @@ export class PublicacionService {
     return this.http.post<any>(this.apiUrl, publicacion).pipe(
       catchError(error => {
         console.error('Error creating Publicacion:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  marcarRecuperado(id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${id}/recuperado`, {}).pipe(
+      catchError(error => {
+        console.error('Error marking as recuperado:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  marcarAdoptado(id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${id}/adoptado`, {}).pipe(
+      catchError(error => {
+        console.error('Error marking as adoptado:', error);
         return throwError(() => error);
       })
     );

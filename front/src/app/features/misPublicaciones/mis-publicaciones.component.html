@@ -1,0 +1,51 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Mis Publicaciones</h1>
+      <p class="text-gray-600 mt-2">Gestiona todas tus publicaciones en un solo lugar</p>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+    </div>
+
+    <!-- Contenido -->
+    <div *ngIf="!isLoading">
+      <!-- Pestañas para filtrar publicaciones -->
+      <div class="flex gap-2 bg-gray-200/50 p-1 rounded-xl w-fit mb-8">
+        <button 
+          (click)="cambiarTab('activas')"
+          [class]="tabActiva === 'activas' 
+            ? 'bg-white text-gray-900 shadow-sm px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200' 
+            : 'text-gray-600 hover:bg-gray-200/50 px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200'">
+          Activas ({{ publicacionesActivas.length }})
+        </button>
+        <button 
+          (click)="cambiarTab('cerradas')"
+          [class]="tabActiva === 'cerradas' 
+            ? 'bg-white text-gray-900 shadow-sm px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200' 
+            : 'text-gray-600 hover:bg-gray-200/50 px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200'">
+          Cerradas ({{ publicacionesCerradas.length }})
+        </button>
+      </div>
+
+      <!-- Grid de publicaciones -->
+      <div *ngIf="publicacionesMostradas.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <app-pet-card *ngFor="let publicacion of publicacionesMostradas" [publicacion]="publicacion"></app-pet-card>
+      </div>
+
+      <!-- Mensaje cuando no hay publicaciones -->
+      <div *ngIf="publicacionesMostradas.length === 0" class="bg-white rounded-2xl shadow-sm p-12 text-center">
+        <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <p class="text-gray-500 text-lg mb-2">No tienes publicaciones {{ tabActiva === 'activas' ? 'activas' : 'cerradas' }}</p>
+        <p class="text-gray-400 text-sm">{{ tabActiva === 'activas' ? '¡Reporta una mascota perdida para comenzar!' : 'Las publicaciones marcadas como recuperadas o adoptadas aparecerán aquí' }}</p>
+      </div>
+    </div>
+
+  </div>
+</div>

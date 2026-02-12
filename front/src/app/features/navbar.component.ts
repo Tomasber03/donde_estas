@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -13,6 +14,7 @@ export class NavbarComponent implements OnInit {
   isAuthenticated: boolean = false;
   userName: string = '';
   showUserMenu: boolean = false;
+  currentRoute: string = '';
 
   constructor(
     public authService: AuthService,
@@ -20,17 +22,32 @@ export class NavbarComponent implements OnInit {
   ) {}
 
   navItems = [
-    { label: 'Inicio', active: true },
-    { label: 'Reportar Mascota', active: false },
-    { label: 'Mis Reportes', active: false },
+    { label: 'Inicio', route: '/home' },
+    { label: 'Reportar Mascota', route: '/crear-publicacion' },
+    { label: 'Mis Reportes', route: '/mis-reportes' },
   ];
   redirectHome() {
     this.router.navigate(['/']);
   }
   
-
   ngOnInit() {
     this.checkAuthentication();
+    this.updateCurrentRoute();
+    
+    // Escuchar cambios de ruta
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.updateCurrentRoute();
+    });
+  }
+  
+  updateCurrentRoute() {
+    this.currentRoute = this.router.url;
+  }
+  
+  isActiveRoute(route: string): boolean {
+    return this.currentRoute === route || this.currentRoute.startsWith(route + '/');
   }
 
   checkAuthentication() {
@@ -50,14 +67,14 @@ export class NavbarComponent implements OnInit {
   }
 
   handleNavClick(label: string) {
-    if (label === 'Inicio') {
-      this.router.navigate(['/home']);
-    } else if (label === 'Reportar Mascota') {
-      this.router.navigate(['/crear-publicacion']);
-    } else if (label === 'Mis Reportes') {
-      this.router.navigate(['/mis-reportes']);
-    } else if (label === 'Ranking') {
-      this.router.navigate(['/ranking']);
+    console.log('handleNavClick llamado con:', label);
+    const item = this.navItems.find(i => i.label === label);
+    console.log('Item encontrado:', item);
+    if (item) {
+      console.log('Navegando a:', item.route);
+      this.router.navigate([item.route]);
+    } else {
+      console.log('No se encontró el item para:', label);
     }
   }
 

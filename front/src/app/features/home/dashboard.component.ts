@@ -31,12 +31,19 @@ export class DashboardComponent implements OnInit {
 
         // Calcular contadores
         for (let pub of this.publicaciones) {
+          // Para publicaciones activas, contar según estadoInicial
           if (pub.activo) {
-             // Asegúrate que el estado venga exactamente como la clave (mayúsculas/guiones)
-             // Si pub.estadoInicial es "PERDIDO_PROPIO", funcionará.
              const estadoKey = pub.estadoInicial as keyof typeof this.countForTab;
              if (this.countForTab[estadoKey] !== undefined) {
                  this.countForTab[estadoKey]++;
+             }
+          } else {
+             // Para publicaciones inactivas (cerradas), contar según estadoCierre
+             if (pub.estadoCierre) {
+               const estadoKey = pub.estadoCierre as keyof typeof this.countForTab;
+               if (this.countForTab[estadoKey] !== undefined) {
+                   this.countForTab[estadoKey]++;
+               }
              }
           }
         }

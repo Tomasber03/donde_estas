@@ -39,7 +39,7 @@ export class ProfileComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private userService: UserService,
-    private router: Router,
+    public router: Router,
     private cdr: ChangeDetectorRef
   ) {}
 

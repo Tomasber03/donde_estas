@@ -1,8 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PublicacionService } from '../../services/PublicactionService.service'; // Ajusta tu path
+import { PublicacionService } from '../../services/PublicactionService.service';
 import { CommonModule, Location } from '@angular/common';
 import { UserService } from '../../services/UserService.service';
+import { AuthService } from '../../services/auth.service';
 import { Publicacion, UsuarioContacto} from '../models.model';
 import { MapComponent } from './map.component';
 
@@ -16,14 +17,14 @@ export class DetallePublicacionComponent implements OnInit {
   publicacion: Publicacion | null = null;
   loading = true;
   usuarioContacto: UsuarioContacto | null = null;
-  permisoEdicion = false;
-  permisoEliminacion = false;
+  esPropia = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private publicacionService: PublicacionService,
     private userService: UserService,
+    private authService: AuthService,
     private location: Location,
     private cdr: ChangeDetectorRef
   ) {}
@@ -36,48 +37,43 @@ export class DetallePublicacionComponent implements OnInit {
   }
 
   cargarPublicacion(id: number) {
-  this.loading = true; // Asegúrate de iniciar loading en true
+    this.loading = true;
 
-  this.publicacionService.getPublicacion(id).subscribe({
-    next: (data: any) => {
-      console.log('Datos de la publicación:', data);
-      this.publicacion = data;
-      
-      if (this.publicacion) {
-        console.log('Avistamientos:', this.publicacion.avistamientos);
+    this.publicacionService.getPublicacion(id).subscribe({
+      next: (data: any) => {
+        this.publicacion = data;
+        
+        // Verificar si la publicación es del usuario actual
+        const currentUser = this.authService.getCurrentUser();
+        if (currentUser && this.publicacion) {
+          this.esPropia = this.publicacion.usuarioId === currentUser.userId;
+        }
+        
+        if (this.publicacion && this.publicacion.usuarioId) {
+          this.userService.getUser(this.publicacion.usuarioId).subscribe({
+            next: (userData: any) => {
+              this.usuarioContacto = userData;
+              this.loading = false;
+              this.cdr.detectChanges();
+            },
+            error: (err) => {
+              console.error('Error usuario', err);
+              this.loading = false;
+              this.cdr.detectChanges();
+            }
+          });
+        } else {
+          this.loading = false;
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err: any) => {
+        console.error('Error al cargar publicación', err);
+        this.loading = false;
+        this.router.navigate(['/']);
       }
-      
-      // --- CORRECCIÓN: Llamamos al usuario SOLO cuando ya tenemos la publicación ---
-      if (this.publicacion && this.publicacion.usuarioId) {
-        this.userService.getUser(this.publicacion.usuarioId).subscribe({
-          next: (userData: any) => {
-            console.log(userData)
-            this.usuarioContacto = userData;
-            this.loading = false; // Terminamos de cargar todo aquí
-            this.cdr.detectChanges();
-            console.log(this.usuarioContacto)
-          },
-          error: (err) => {
-            console.error('Error usuario', err);
-            this.loading = false;
-            this.cdr.detectChanges();
-          }
-        });
-      } else {
-         this.loading = false; // Si no hay usuarioId, terminamos carga
-      
-         this.cdr.detectChanges();
-      }
-      // ---------------------------------------------------------------------------
-    },
-    error: (err: any) => {
-      console.error('Error al cargar publicación', err);
-      this.loading = false;
-      this.router.navigate(['/']); // Redirige al dashboard en caso de error
-    }
-  });
-
-}
+    });
+  }
 
 
   volver() {
@@ -94,7 +90,6 @@ export class DetallePublicacionComponent implements OnInit {
         publicacionId: this.publicacion.id 
       };
       
-      // Agregar coordenadas si la publicación tiene ubicación
       if (this.publicacion.ubicacion) {
         queryParams.lat = this.publicacion.ubicacion.latitud;
         queryParams.lng = this.publicacion.ubicacion.longitud;
@@ -107,22 +102,62 @@ export class DetallePublicacionComponent implements OnInit {
   }
 
   editarPublicacion() {
-  }
-  eliminarPublicacion() {
+    if (!this.esPropia) {
+      alert('No tienes permiso para editar esta publicación');
+      return;
+    }
+    
     if (this.publicacion && this.publicacion.id) {
+      this.router.navigate(['/editar-publicacion', this.publicacion.id]);
+    }
+  }
+  
+  marcarComoRecuperado() {
+    if (!this.esPropia) {
+      alert('No tienes permiso para modificar esta publicación');
+      return;
+    }
+    
+    if (!this.publicacion || !this.publicacion.id) {
+      return;
+    }
+    
+    if (confirm('¿Estás seguro de que quieres marcar esta publicación como recuperada?')) {
+      this.publicacionService.marcarRecuperado(this.publicacion.id).subscribe({
+        next: () => {
+          alert('¡Felicidades! La mascota ha sido marcada como recuperada');
+          // Recargar la publicación para mostrar el estado actualizado
+          if (this.publicacion && this.publicacion.id) {
+            this.cargarPublicacion(this.publicacion.id);
+          }
+        },
+        error: (err) => {
+          console.error('Error al marcar como recuperado', err);
+          alert('Error al marcar la publicación como recuperada');
+        }
+      });
+    }
+  }
+  
+  eliminarPublicacion() {
+    if (!this.esPropia) {
+      alert('No tienes permiso para eliminar esta publicación');
+      return;
+    }
+    
+    if (!this.publicacion || !this.publicacion.id) {
+      return;
+    }
+    
+    if (confirm('¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.')) {
       this.publicacionService.deletePublicacion(this.publicacion.id).subscribe({
         next: () => {
-          console.log('Publicación eliminada con éxito');
+          alert('Publicación eliminada exitosamente');
           this.router.navigate(['/home']);
-        }
-        ,
+        },
         error: (err) => {
-          if (err.status === 403) {
-            alert('No tienes permiso para eliminar esta publicación.');
-            return;
-          }
           console.error('Error al eliminar la publicación', err);
-          alert('Ocurrió un error al eliminar la publicación.');
+          alert('Error al eliminar la publicación');
         }
       });
     }
@@ -131,9 +166,11 @@ export class DetallePublicacionComponent implements OnInit {
   // Helper para el color del badge según estado
   getEstadoBadgeColor(estado: string): string {
     switch (estado) {
-      case 'PERDIDO': return 'bg-red-600';
-      case 'ENCONTRADO': return 'bg-green-600';
-      default: return 'bg-blue-600';
+      case 'PERDIDO_PROPIO': return 'bg-red-600';
+      case 'PERDIDO_AJENO': return 'bg-orange-600';
+      case 'RECUPERADO': return 'bg-green-600';
+      case 'ADOPTADO': return 'bg-blue-600';
+      default: return 'bg-gray-600';
     }
   }
 }
