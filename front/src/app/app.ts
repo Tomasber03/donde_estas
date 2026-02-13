@@ -5,8 +5,7 @@ import { NavbarComponent } from './features/navbar.component';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, NavbarComponent],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  templateUrl: './app.html'
 })
 export class App {
   router = inject(Router);

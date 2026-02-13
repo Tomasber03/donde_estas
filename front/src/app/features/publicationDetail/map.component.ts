@@ -147,10 +147,7 @@ export class MapComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   private addSightingMarkers(): void {
-    console.log('Agregando marcadores de avistamientos:', this.avistamientos);
-    
     if (!this.map || !this.avistamientos || this.avistamientos.length === 0) {
-      console.log('No hay avistamientos para mostrar');
       return;
     }
 
@@ -164,13 +161,9 @@ export class MapComponent implements AfterViewInit, OnDestroy, OnChanges {
     });
 
     this.avistamientos.forEach((avistamiento, index) => {
-      console.log(`Procesando avistamiento ${index + 1}:`, avistamiento);
-      
       if (avistamiento.ubicacion && avistamiento.ubicacion.latitud && avistamiento.ubicacion.longitud) {
         const lat = parseFloat(avistamiento.ubicacion.latitud);
         const lng = parseFloat(avistamiento.ubicacion.longitud);
-
-        console.log(`Coordenadas del avistamiento ${index + 1}: lat=${lat}, lng=${lng}`);
 
         if (!isNaN(lat) && !isNaN(lng)) {
           const fecha = new Date(avistamiento.fechaCreacion).toLocaleDateString('es-ES');
@@ -193,13 +186,11 @@ export class MapComponent implements AfterViewInit, OnDestroy, OnChanges {
               this.avistamientoClick.emit(avistamiento.id);
             }
           });
-            
-          console.log(`✓ Marcador agregado para avistamiento ${index + 1}`);
         } else {
-          console.log(`✗ Coordenadas inválidas para avistamiento ${index + 1}`);
+          console.error(`Coordenadas inválidas para avistamiento ${index + 1}`);
         }
       } else {
-        console.log(`✗ Sin ubicación para avistamiento ${index + 1}`);
+        console.error(`Sin ubicación para avistamiento ${index + 1}`);
       }
     });
   }

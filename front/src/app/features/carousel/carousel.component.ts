@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { MascotaService, Mascota } from '../../services/mascota.service';
+import { MascotaService } from '../../services/mascota.service';
+import { Mascota } from '../models.model';
 import { AuthService } from '../../services/auth.service';
 import { PublicacionService } from '../../services/PublicactionService.service';
 import { forkJoin } from 'rxjs';

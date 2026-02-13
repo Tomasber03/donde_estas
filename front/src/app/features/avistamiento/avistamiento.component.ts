@@ -2,14 +2,14 @@ import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { EditableMapComponent, MapLocation } from './editable-map.component';
+import { MapSelectorComponent, MapLocation } from '../../shared/map-selector/map-selector.component';
 import { AvistamientoService } from '../../services/avistamiento.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-avistamiento',
   standalone: true,
-  imports: [CommonModule, FormsModule, EditableMapComponent],
+  imports: [CommonModule, FormsModule, MapSelectorComponent],
   templateUrl: './avistamiento.component.html',
   styleUrls: ['./avistamiento.component.css']
 })

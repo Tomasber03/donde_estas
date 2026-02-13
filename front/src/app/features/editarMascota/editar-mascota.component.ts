@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Mascota, MascotaService, FotoMascota } from '../../services/mascota.service';
+import { MascotaService } from '../../services/mascota.service';
+import { Mascota, Foto } from '../models.model';
 
 @Component({
   selector: 'app-editar-mascota',
@@ -18,7 +19,7 @@ export class EditarMascotaComponent implements OnInit {
   // Fotos existentes y nuevas
   fotosNuevas: File[] = [];
   previewNuevas: string[] = [];
-  fotosExistentes: FotoMascota[] = [];
+  fotosExistentes: Foto[] = [];
   fotosEliminadasIds: number[] = [];
 
   constructor(
@@ -41,7 +42,6 @@ export class EditarMascotaComponent implements OnInit {
     this.mascotaService.getMascota(id).subscribe({
       next: (data) => {
         this.mascota = { ...data };
-        console.log('Mascota cargada:', this.mascota);
         this.fotosExistentes = (data.fotos || []).map(f => ({ ...f }));
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -67,7 +67,7 @@ export class EditarMascotaComponent implements OnInit {
     }
 
     // Preparar fotos: mantener las que no se eliminaron + agregar nuevas
-    const fotosFinales: FotoMascota[] = [];
+    const fotosFinales: Foto[] = [];
 
     // Mantener fotos existentes no eliminadas
     for (const foto of this.fotosExistentes) {
@@ -78,7 +78,7 @@ export class EditarMascotaComponent implements OnInit {
 
     // Convertir nuevas fotos a base64 antes de enviar
     const convertirFotosNuevas = this.fotosNuevas.map((file) => {
-      return new Promise<FotoMascota>((resolve) => {
+      return new Promise<Foto>((resolve) => {
         const reader = new FileReader();
         reader.onload = (e: any) => {
           resolve({

@@ -2,17 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { InteractiveMapComponent, MapLocation } from './interactive-map.component';
+import { MapSelectorComponent, MapLocation } from '../../shared/map-selector/map-selector.component';
 import { PublicacionService } from '../../services/PublicactionService.service';
 import { AuthService } from '../../services/auth.service';
-import { MascotaService, Mascota } from '../../services/mascota.service';
+import { MascotaService } from '../../services/mascota.service';
+import { Mascota } from '../models.model';
 import { ChangeDetectorRef } from '@angular/core';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-create-publication',
   standalone: true,
-  imports: [CommonModule, FormsModule, InteractiveMapComponent],
+  imports: [CommonModule, FormsModule, MapSelectorComponent],
   templateUrl: './create-publication.component.html',
 })
 export class CreatePublicationComponent implements OnInit {

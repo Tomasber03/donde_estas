@@ -2,25 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-
-export interface FotoMascota {
-  id?: number;
-  nombre: string;
-  url?: string;
-  descripcion?: string;
-  fechaCreacion?: string;
-}
-
-export interface Mascota {
-  id?: number;
-  nombre: string;
-  raza: string;
-  color: string;
-  tamano: string;
-  tipo: string;
-  sexo: string;
-  fotos?: FotoMascota[];
-}
+import { Mascota, Foto } from '../features/models.model';
 
 @Injectable({ providedIn: 'root' })
 export class MascotaService {
