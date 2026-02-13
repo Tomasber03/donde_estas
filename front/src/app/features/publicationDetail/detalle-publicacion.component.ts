@@ -18,6 +18,9 @@ export class DetallePublicacionComponent implements OnInit {
   loading = true;
   usuarioContacto: UsuarioContacto | null = null;
   esPropia = false;
+  
+  // Carrusel de fotos
+  fotoActualIndex = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,6 +46,7 @@ export class DetallePublicacionComponent implements OnInit {
       next: (data: any) => {
         this.publicacion = data;
         
+        // Verificar si la publicación es del usuario actual
         const currentUser = this.authService.getCurrentUser();
         if (currentUser && this.publicacion) {
           this.esPropia = this.publicacion.usuarioId === currentUser.userId;
@@ -131,6 +135,7 @@ export class DetallePublicacionComponent implements OnInit {
       this.publicacionService.marcarRecuperado(this.publicacion.id).subscribe({
         next: () => {
           alert('¡Felicidades! La mascota ha sido marcada como recuperada');
+          // Recargar la publicación para mostrar el estado actualizado
           if (this.publicacion && this.publicacion.id) {
             this.cargarPublicacion(this.publicacion.id);
           }
@@ -156,6 +161,7 @@ export class DetallePublicacionComponent implements OnInit {
       this.publicacionService.marcarAdoptado(this.publicacion.id).subscribe({
         next: () => {
           alert('¡Felicidades! La mascota ha sido marcada como adoptada');
+          // Recargar la publicación para mostrar el estado actualizado
           if (this.publicacion && this.publicacion.id) {
             this.cargarPublicacion(this.publicacion.id);
           }
@@ -191,6 +197,7 @@ export class DetallePublicacionComponent implements OnInit {
     }
   }
 
+  // Helper para el color del badge según estado
   getEstadoBadgeColor(estado: string): string {
     switch (estado) {
       case 'PERDIDO_PROPIO': return 'bg-red-600';
@@ -199,5 +206,26 @@ export class DetallePublicacionComponent implements OnInit {
       case 'ADOPTADO': return 'bg-blue-600';
       default: return 'bg-gray-600';
     }
+  }
+  
+  // Métodos para el carrusel de fotos
+  get totalFotos(): number {
+    return this.publicacion?.mascota?.fotos?.length || 0;
+  }
+  
+  siguienteFoto(): void {
+    if (this.publicacion && this.publicacion.mascota.fotos) {
+      this.fotoActualIndex = (this.fotoActualIndex + 1) % this.publicacion.mascota.fotos.length;
+    }
+  }
+  
+  anteriorFoto(): void {
+    if (this.publicacion && this.publicacion.mascota.fotos) {
+      this.fotoActualIndex = (this.fotoActualIndex - 1 + this.publicacion.mascota.fotos.length) % this.publicacion.mascota.fotos.length;
+    }
+  }
+  
+  irAFoto(index: number): void {
+    this.fotoActualIndex = index;
   }
 }
