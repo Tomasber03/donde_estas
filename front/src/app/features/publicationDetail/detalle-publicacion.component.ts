@@ -144,7 +144,32 @@ export class DetallePublicacionComponent implements OnInit {
       });
     }
   }
-  
+  marcarComoAdoptado() {
+    if (!this.esPropia) {
+      alert('No tienes permiso para modificar esta publicación');
+      return;
+    }
+    
+    if (!this.publicacion || !this.publicacion.id) {
+      return;
+    }
+    
+    if (confirm('¿Estás seguro de que quieres marcar esta publicación como adoptada?')) {
+      this.publicacionService.marcarAdoptado(this.publicacion.id).subscribe({
+        next: () => {
+          alert('¡Felicidades! La mascota ha sido marcada como adoptada');
+          // Recargar la publicación para mostrar el estado actualizado
+          if (this.publicacion && this.publicacion.id) {
+            this.cargarPublicacion(this.publicacion.id);
+          }
+        },
+        error: (err) => {
+          console.error('Error al marcar como adoptado', err);
+          alert('Error al marcar la publicación como adoptada');
+        }
+      });
+    }
+  }
   eliminarPublicacion() {
     if (!this.esPropia) {
       alert('No tienes permiso para eliminar esta publicación');

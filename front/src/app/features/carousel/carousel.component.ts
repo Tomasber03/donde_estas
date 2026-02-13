@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MascotaService, Mascota } from '../../services/mascota.service';
@@ -24,6 +24,7 @@ export class CarouselComponent implements OnInit {
     private mascotaService: MascotaService,
     private authService: AuthService,
     private publicacionService: PublicacionService,
+    private cdr: ChangeDetectorRef,
     private router: Router
   ) {}
 
@@ -67,17 +68,22 @@ export class CarouselComponent implements OnInit {
               this.mascotaPublicacionMap.set(pub.mascota.id, pub.id);
             }
           });
+          console.log('Mascotas cargadas:', this.mascotas);
           
           this.isLoading = false;
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Error al cargar mascotas:', error);
           this.mascotas = [];
           this.isLoading = false;
+          this.cdr.detectChanges();
         }
       });
     } else {
       this.isLoading = false;
+      this.mascotas = [];
+      this.cdr.detectChanges();
     }
   }
 

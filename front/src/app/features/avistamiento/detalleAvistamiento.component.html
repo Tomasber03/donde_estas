@@ -75,9 +75,6 @@
         </svg>
         Ubicación del Avistamiento
       </h2>
-      <div class="location-info">
-        <p class="location-text">{{ avistamiento.ubicacion.barrio }}, {{ avistamiento.ubicacion.ciudad }}</p>
-      </div>
       <app-map 
         [lat]="avistamiento.ubicacion.latitud" 
         [lng]="avistamiento.ubicacion.longitud">

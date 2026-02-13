@@ -1,5 +1,7 @@
 package org.example.donde_estas.controller;
 
+import java.time.LocalDateTime;
+
 import org.example.donde_estas.dto.avistamiento.AvistamientoDTO;
 import org.example.donde_estas.model.Avistamiento;
 import org.example.donde_estas.service.AvistamientoService;
@@ -15,6 +17,7 @@ public class AvistamientoController {
     private AvistamientoService avistamientoService;
     @PostMapping
     public ResponseEntity<AvistamientoDTO> create(@RequestBody AvistamientoDTO dto) {
+        dto.setFechaCreacion(LocalDateTime.now());
         AvistamientoDTO dtoPersistido = new AvistamientoDTO (avistamientoService.persist(dto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dtoPersistido);
     }
