@@ -86,9 +86,21 @@ export class AuthService {
   }
 
   /**
+  * Actualiza los datos del usuario actual en localStorage
+  */
+  updateCurrentUser(nombre: string): void {
+    const user = this.getCurrentUser();
+    if (user) {
+      user.nombre = nombre;
+      localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    }
+  }
+
+  /**
    * Valida el token con el backend
    */
   validateToken(): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/validate`);
   }
+  
 }

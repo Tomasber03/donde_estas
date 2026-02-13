@@ -117,61 +117,66 @@ export class ProfileComponent implements OnInit {
     fileInput.click();
   }
 
-  saveProfile() {
-    const currentUser = this.authService.getCurrentUser();
-    if (!currentUser || !currentUser.userId) {
-      this.errorMessage = 'No se pudo identificar el usuario';
-      return;
-    }
-
-    console.log('Guardando perfil para usuario ID:', currentUser.userId);
-    console.log('Datos a guardar:', this.editingUser);
-
-    // Crear objeto User completo para enviar al backend
-    const updatedUser: User = {
-      id: currentUser.userId,
-      nombre: this.editingUser.nombre || '',
-      apellido: this.editingUser.apellido || '',
-      email: this.editingUser.email || '',
-      telefono: this.editingUser.telefono || '',
-      ciudad: this.editingUser.ciudad || '',
-      barrio: this.editingUser.barrio || '',
-      clave: this.user.email || '', // No se actualiza en backend, pero se envía el actual
-      rolPersistido: 'USUARIOPUBLICO' // Valor por defecto
-    };
-
-    console.log('Objeto a enviar al backend:', updatedUser);
-
-    // Enviar cambios al backend
-    this.userService.updateUser(updatedUser).subscribe({
-      next: (response) => {
-        console.log('Usuario actualizado en backend:', response);
-        
-        // Actualizar datos locales solo después de éxito en backend
-        this.user = { ...this.editingUser };
-        if (this.tempPreviewImage) {
-          this.previewImage = this.tempPreviewImage;
-        }
-        
-        this.successMessage = 'Perfil actualizado correctamente';
-        this.closeModal();
-        this.cdr.detectChanges();
-        
-        setTimeout(() => {
-          this.successMessage = '';
-          this.cdr.detectChanges();
-        }, 5000);
-      },
-      error: (error) => {
-        console.error('Error al actualizar perfil:', error);
-        this.errorMessage = 'Error al guardar los cambios. Intenta nuevamente.';
-        this.cdr.detectChanges();
-        
-        setTimeout(() => {
-          this.errorMessage = '';
-          this.cdr.detectChanges();
-        }, 5000);
-      }
-    });
+  ssaveProfile() {
+  const currentUser = this.authService.getCurrentUser();
+  if (!currentUser || !currentUser.userId) {
+    this.errorMessage = 'No se pudo identificar el usuario';
+    return;
   }
+
+  console.log('Guardando perfil para usuario ID:', currentUser.userId);
+  console.log('Datos a guardar:', this.editingUser);
+
+  // Crear objeto User completo para enviar al backend
+  const updatedUser: User = {
+    id: currentUser.userId,
+    nombre: this.editingUser.nombre || '',
+    apellido: this.editingUser.apellido || '',
+    email: this.editingUser.email || '',
+    telefono: this.editingUser.telefono || '',
+    ciudad: this.editingUser.ciudad || '',
+    barrio: this.editingUser.barrio || '',
+    clave: this.user.email || '', // No se actualiza en backend, pero se envía el actual
+    rolPersistido: 'USUARIOPUBLICO' // Valor por defecto
+  };
+
+  console.log('Objeto a enviar al backend:', updatedUser);
+
+  // Enviar cambios al backend
+  this.userService.updateUser(updatedUser).subscribe({
+    next: (response) => {
+      console.log('Usuario actualizado en backend:', response);
+      
+      // Actualizar datos locales solo después de éxito en backend
+      this.user = { ...this.editingUser };
+      if (this.tempPreviewImage) {
+        this.previewImage = this.tempPreviewImage;
+      }
+      
+      // NUEVO: Actualizar el nombre en AuthService para que el navbar se actualice
+      if (this.editingUser.nombre) {
+        this.authService.updateCurrentUser(this.editingUser.nombre);
+      }
+      
+      this.successMessage = 'Perfil actualizado correctamente';
+      this.closeModal();
+      this.cdr.detectChanges();
+      
+      setTimeout(() => {
+        this.successMessage = '';
+        this.cdr.detectChanges();
+      }, 5000);
+    },
+    error: (error) => {
+      console.error('Error al actualizar perfil:', error);
+      this.errorMessage = 'Error al guardar los cambios. Intenta nuevamente.';
+      this.cdr.detectChanges();
+      
+      setTimeout(() => {
+        this.errorMessage = '';
+        this.cdr.detectChanges();
+      }, 5000);
+    }
+  });
+}
 }
