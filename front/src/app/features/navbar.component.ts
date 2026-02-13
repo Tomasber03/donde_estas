@@ -19,6 +19,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   notification: Notification | null = null;
   private notificationSubscription?: Subscription;
   private userUpdateSubscription?: Subscription;
+  private routerSubscription?: Subscription;
   currentRoute: string = '';
 
   constructor(
@@ -39,6 +40,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   
   ngOnInit() {
     this.checkAuthentication();
+    
+    // Suscribirse a notificaciones
     this.notificationSubscription = this.notificationService.notification$.subscribe(notification => {
       this.notification = notification;
       this.cdr.detectChanges();
@@ -55,6 +58,25 @@ export class NavbarComponent implements OnInit, OnDestroy {
       }
       this.cdr.detectChanges();
     });
+    
+    // Verificar estado de cookies en cada cambio de ruta
+    this.routerSubscription = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.authService.checkCookieState();
+      this.updateCurrentRoute();
+    });
+    
+    // Verificar estado cuando el usuario vuelve a la pestaña
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    
+    this.updateCurrentRoute();
+  }
+
+  private handleVisibilityChange = () => {
+    if (!document.hidden) {
+      this.authService.checkCookieState();
+    }
   }
 
   ngOnDestroy() {
@@ -64,14 +86,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.userUpdateSubscription) {
       this.userUpdateSubscription.unsubscribe();
     }
-    this.updateCurrentRoute();
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
     
-    // Escuchar cambios de ruta
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      this.updateCurrentRoute();
-    });
+    // Limpiar el event listener
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
   }
   
   updateCurrentRoute() {

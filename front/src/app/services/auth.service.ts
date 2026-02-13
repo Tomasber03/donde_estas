@@ -148,6 +148,24 @@ export class AuthService {
   }
 
   /**
+   * Sincroniza el estado del BehaviorSubject con las cookies reales
+   * Útil para detectar cuando las cookies fueron eliminadas externamente
+   */
+  checkCookieState(): void {
+    const currentUser = this.getCurrentUser();
+    const currentSubjectValue = this.userUpdated$.value;
+    
+    // Si el BehaviorSubject dice que hay usuario pero las cookies no existen
+    if (currentSubjectValue && !currentUser) {
+      this.userUpdated$.next(null);
+    }
+    // Si las cookies existen pero el BehaviorSubject está en null
+    else if (!currentSubjectValue && currentUser) {
+      this.userUpdated$.next(currentUser);
+    }
+  }
+
+  /**
    * Valida el token con el backend
    */
   validateToken(): Observable<boolean> {
