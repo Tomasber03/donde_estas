@@ -106,6 +106,11 @@ public class UsuarioService {
         return cargarRoles(usuarios);
     }
 
+    public void delete(Long id) {
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow(EntityNotFoundException::new);
+        usuarioRepo.delete(usuario);
+    }
+
     private Usuario cargarRol(Usuario usuario) {
         if (usuario == null)
             return usuario;

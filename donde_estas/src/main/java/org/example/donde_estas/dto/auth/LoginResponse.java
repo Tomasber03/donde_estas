@@ -12,5 +12,6 @@ public class LoginResponse {
     private Long userId;
     private String email;
     private String nombre;
+    private String rol; // Nombre del rol (ADMIN, USUARIO_PUBLICO, etc.)
     private int expiresIn; // Tiempo de expiración en segundos
 }

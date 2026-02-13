@@ -58,6 +58,7 @@ public class AuthService {
                 usuario.getId(),
                 usuario.getEmail(),
                 usuario.getNombre(),
+                usuario.getRolNuevo() != null ? usuario.getRolNuevo().getNombre() : "USUARIO_PUBLICO",
                 jwtExpiration
         );
     }
