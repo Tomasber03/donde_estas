@@ -39,10 +39,8 @@ export class MisPublicacionesComponent implements OnInit {
 
     this.publicacionService.getPublicacions().subscribe({
       next: (data: Publicacion[]) => {
-        // Filtrar solo las publicaciones del usuario actual
         this.misPublicaciones = data.filter(pub => pub.usuarioId === currentUser.userId);
         
-        // Separar en activas y cerradas
         this.publicacionesActivas = this.misPublicaciones.filter(pub => pub.activo);
         this.publicacionesCerradas = this.misPublicaciones.filter(pub => !pub.activo);
         

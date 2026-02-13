@@ -26,10 +26,8 @@ export class LoginComponent {
   ) {}
 
   onSubmit() {
-    // Limpiar mensaje de error previo
     this.errorMessage = '';
     
-    // Validación básica
     if (!this.email || !this.password) {
       this.errorMessage = 'Por favor, ingresa email y contraseña';
       return;
@@ -37,12 +35,10 @@ export class LoginComponent {
 
     this.isLoading = true;
 
-    // Llamar al servicio de autenticación
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
         console.log('Login exitoso:', response);
         
-        // Obtener la URL de retorno o ir al home por defecto
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
         this.router.navigate([returnUrl]);
       },
@@ -50,7 +46,6 @@ export class LoginComponent {
         console.error('Error en login:', error);
         this.isLoading = false;
         
-        // Mostrar mensaje de error
         if (error.status === 401) {
           this.errorMessage = 'Email o contraseña incorrectos';
         } else {

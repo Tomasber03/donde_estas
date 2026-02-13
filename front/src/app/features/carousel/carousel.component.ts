@@ -63,7 +63,6 @@ export class CarouselComponent implements OnInit {
         next: ({ mascotas, publicaciones }) => {
           this.mascotas = mascotas;
           
-          // Crear mapa de mascotaId -> publicacionId
           publicaciones.forEach(pub => {
             if (pub.mascota && pub.mascota.id && pub.activo) {
               this.mascotaPublicacionMap.set(pub.mascota.id, pub.id);

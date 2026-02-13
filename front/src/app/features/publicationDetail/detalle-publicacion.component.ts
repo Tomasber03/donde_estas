@@ -43,7 +43,6 @@ export class DetallePublicacionComponent implements OnInit {
       next: (data: any) => {
         this.publicacion = data;
         
-        // Verificar si la publicación es del usuario actual
         const currentUser = this.authService.getCurrentUser();
         if (currentUser && this.publicacion) {
           this.esPropia = this.publicacion.usuarioId === currentUser.userId;
@@ -132,7 +131,6 @@ export class DetallePublicacionComponent implements OnInit {
       this.publicacionService.marcarRecuperado(this.publicacion.id).subscribe({
         next: () => {
           alert('¡Felicidades! La mascota ha sido marcada como recuperada');
-          // Recargar la publicación para mostrar el estado actualizado
           if (this.publicacion && this.publicacion.id) {
             this.cargarPublicacion(this.publicacion.id);
           }
@@ -158,7 +156,6 @@ export class DetallePublicacionComponent implements OnInit {
       this.publicacionService.marcarAdoptado(this.publicacion.id).subscribe({
         next: () => {
           alert('¡Felicidades! La mascota ha sido marcada como adoptada');
-          // Recargar la publicación para mostrar el estado actualizado
           if (this.publicacion && this.publicacion.id) {
             this.cargarPublicacion(this.publicacion.id);
           }
@@ -194,7 +191,6 @@ export class DetallePublicacionComponent implements OnInit {
     }
   }
 
-  // Helper para el color del badge según estado
   getEstadoBadgeColor(estado: string): string {
     switch (estado) {
       case 'PERDIDO_PROPIO': return 'bg-red-600';

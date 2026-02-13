@@ -111,7 +111,6 @@ export class MapSelectorComponent implements AfterViewInit, OnDestroy, OnChanges
   mapId: string;
 
   constructor() {
-    // Generar ID único para evitar conflictos si hay múltiples mapas
     this.mapId = `map-selector-${Math.random().toString(36).substr(2, 9)}`;
     this.fixLeafletIcons();
   }
@@ -145,7 +144,6 @@ export class MapSelectorComponent implements AfterViewInit, OnDestroy, OnChanges
 
     tiles.addTo(this.map);
 
-    // Evento de clic en el mapa
     this.map.on('click', (e: L.LeafletMouseEvent) => {
       this.onMapClick(e.latlng);
     });
@@ -154,31 +152,27 @@ export class MapSelectorComponent implements AfterViewInit, OnDestroy, OnChanges
   private onMapClick(latlng: L.LatLng): void {
     const { lat, lng } = latlng;
 
-    // Actualizar ubicación seleccionada
     this.selectedLocation = {
       lat,
       lng
     };
 
-    // Remover marcador anterior si existe
     if (this.marker) {
       this.marker.remove();
     }
 
-    // Crear nuevo marcador
     this.marker = L.marker([lat, lng], {
       draggable: this.draggable
     }).addTo(this.map!);
 
     if (this.draggable) {
-      // Evento cuando se arrastra el marcador
       this.marker.on('dragend', (e) => {
         const newPos = (e.target as L.Marker).getLatLng();
         this.updateLocation(newPos.lat, newPos.lng);
       });
     }
 
-    // Actualizar ubicación (con o sin geocoding)
+
     this.updateLocation(lat, lng);
   }
 
@@ -222,9 +216,6 @@ export class MapSelectorComponent implements AfterViewInit, OnDestroy, OnChanges
     }
   }
 
-  /**
-   * Método público para establecer ubicación programáticamente
-   */
   public setLocation(lat: number, lng: number): void {
     if (this.map) {
       this.map.setView([lat, lng], 15);
@@ -232,9 +223,6 @@ export class MapSelectorComponent implements AfterViewInit, OnDestroy, OnChanges
     }
   }
 
-  /**
-   * Solución para que aparezcan los iconos correctamente en Angular
-   */
   private fixLeafletIcons() {
     const iconRetinaUrl = 'assets/marker-icon-2x.png';
     const iconUrl = 'assets/marker-icon.png';

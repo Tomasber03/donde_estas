@@ -22,7 +22,6 @@ export class AvistamientoComponent implements OnInit {
   publicacionId: number | null = null;
   isSubmitting: boolean = false;
   
-  // Coordenadas para centrar el mapa
   mapLat: number = -34.9011; // Coordenadas por defecto
   mapLng: number = -56.1645;
 
@@ -35,14 +34,12 @@ export class AvistamientoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener el ID de la publicación y las coordenadas desde los query params
     this.route.queryParams.subscribe(params => {
       if (params['publicacionId']) {
         this.publicacionId = Number(params['publicacionId']);
         console.log('ID de publicación recibido:', this.publicacionId);
       }
       
-      // Si vienen coordenadas, usarlas para centrar el mapa
       if (params['lat'] && params['lng']) {
         this.mapLat = Number(params['lat']);
         this.mapLng = Number(params['lng']);
@@ -57,7 +54,6 @@ export class AvistamientoComponent implements OnInit {
       this.selectedFile = input.files[0];
       this.selectedFileName = this.selectedFile.name;
 
-      // Crear vista previa
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         this.photoPreview = e.target?.result as string;
@@ -106,7 +102,6 @@ export class AvistamientoComponent implements OnInit {
         return;
       }
 
-      // Preparar los datos para enviar
       const avistamientoData = {
         comentario: this.comentario,
         usuarioId: userId,
@@ -131,7 +126,6 @@ export class AvistamientoComponent implements OnInit {
           console.log('Avistamiento creado exitosamente:', response);
           alert('Avistamiento reportado exitosamente');
           
-          // Redirigir a la publicación
           if (this.publicacionId) {
             this.router.navigate(['/publicacion', this.publicacionId]);
           } else {

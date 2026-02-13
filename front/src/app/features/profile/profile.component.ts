@@ -16,7 +16,6 @@ import { CarouselComponent } from '../carousel/carousel.component';
 export class ProfileComponent implements OnInit {
   user: Partial<User> = {};
 
-  // Datos temporales para edición en el modal
   editingUser: Partial<User> = { ...this.user };
 
   showModal: boolean = false;
@@ -67,7 +66,6 @@ export class ProfileComponent implements OnInit {
   }
 
   openEditModal() {
-    // Copiar los datos actuales al objeto de edición
     this.editingUser = { ...this.user };
     this.tempPreviewImage = this.previewImage;
     this.showModal = true;
@@ -107,7 +105,6 @@ export class ProfileComponent implements OnInit {
     return;
   }
 
-  // Crear objeto User completo para enviar al backend
   const updatedUser: User = {
     id: currentUser.userId,
     nombre: this.editingUser.nombre || '',
@@ -120,19 +117,16 @@ export class ProfileComponent implements OnInit {
     rolPersistido: 'USUARIOPUBLICO' // Valor por defecto
   };
 
-  // Enviar cambios al backend
   this.userService.updateUser(updatedUser).subscribe({
     next: (response) => {
-      // Actualizar datos locales solo después de éxito en backend
       this.user = { ...this.editingUser };
       if (this.tempPreviewImage) {
         this.previewImage = this.tempPreviewImage;
       }
       
-      // NUEVO: Actualizar el nombre en AuthService para que el navbar se actualice
-      if (this.editingUser.nombre) {
-        this.authService.updateCurrentUser(this.editingUser.nombre);
-      }
+      this.authService.refreshCurrentUser().subscribe({
+        error: (err) => console.error('Error al refrescar usuario:', err)
+      });
       
       this.successMessage = 'Perfil actualizado correctamente';
       this.closeModal();

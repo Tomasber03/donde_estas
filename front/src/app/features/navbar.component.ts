@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -39,15 +39,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
   
   ngOnInit() {
+    console.log('NavbarComponent ngOnInit - Verificando autenticación');
     this.checkAuthentication();
     
-    // Suscribirse a notificaciones
     this.notificationSubscription = this.notificationService.notification$.subscribe(notification => {
       this.notification = notification;
       this.cdr.detectChanges();
     });
     
-    // Suscribirse a actualizaciones del usuario
     this.userUpdateSubscription = this.authService.userUpdates$.subscribe(user => {
       if (user) {
         this.userName = user.nombre || 'Usuario';
@@ -59,26 +58,26 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
     });
     
-    // Verificar estado de cookies en cada cambio de ruta
+    if (this.authService.isAuthenticated() && !this.authService.getCurrentUser()) {
+      this.authService.loadCurrentUser().subscribe({
+        error: (err) => console.error('Error al cargar usuario:', err)
+      });
+    }
+    
     this.routerSubscription = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      this.authService.checkCookieState();
       this.updateCurrentRoute();
     });
     
-    // Verificar estado cuando el usuario vuelve a la pestaña
-    document.addEventListener('visibilitychange', this.handleVisibilityChange);
-    
     this.updateCurrentRoute();
   }
-
-  private handleVisibilityChange = () => {
-    if (!document.hidden) {
-      this.authService.checkCookieState();
-    }
+@HostListener('window:focus')
+  onWindowFocus(): void {
+    this.authService.refreshCurrentUser().subscribe({
+      error: (err) => console.error('Error al refrescar usuario:', err)
+    });
   }
-
   ngOnDestroy() {
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();
@@ -89,9 +88,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
-    
-    // Limpiar el event listener
-    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
   }
   
   updateCurrentRoute() {
@@ -107,7 +103,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.isAuthenticated) {
       const user = this.authService.getCurrentUser();
       this.userName = user?.nombre || 'Usuario';
+      console.log('Usuario autenticado:', this.userName);
     }
+    else
+      console.log('furry facto');
+
   }
 
   toggleUserMenu() {

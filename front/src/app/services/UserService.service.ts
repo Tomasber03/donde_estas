@@ -12,8 +12,7 @@ export class UserService {
     return this.http.get<User[]>(this.apiUrl).pipe(
       catchError(error => {
         console.error('Error fetching users:', error);
-        return of([]); // no propaga el error
-        //return throwError(() => error); // propaga el error
+        return of([]);
       })
     );
   }

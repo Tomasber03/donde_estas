@@ -16,7 +16,6 @@ export class EditarMascotaComponent implements OnInit {
   isLoading = true;
   isSaving = false;
   errorMessage = '';
-  // Fotos existentes y nuevas
   fotosNuevas: File[] = [];
   previewNuevas: string[] = [];
   fotosExistentes: Foto[] = [];
@@ -66,17 +65,14 @@ export class EditarMascotaComponent implements OnInit {
       return;
     }
 
-    // Preparar fotos: mantener las que no se eliminaron + agregar nuevas
     const fotosFinales: Foto[] = [];
 
-    // Mantener fotos existentes no eliminadas
     for (const foto of this.fotosExistentes) {
       if (!foto.id || !this.fotosEliminadasIds.includes(foto.id)) {
         fotosFinales.push({ ...foto });
       }
     }
 
-    // Convertir nuevas fotos a base64 antes de enviar
     const convertirFotosNuevas = this.fotosNuevas.map((file) => {
       return new Promise<Foto>((resolve) => {
         const reader = new FileReader();

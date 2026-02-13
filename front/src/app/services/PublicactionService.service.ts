@@ -4,36 +4,6 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Publicacion } from '../features/models.model';
 
-/*
-ejemplo de publicacion 
-[
-  {
-    "id": 1,
-    "mascota": {
-      "id": 1,
-      "nombre": "",
-      "raza": "",
-      "color": "",
-      "tamano": "",
-      "tipo": ""
-    },
-    "avistamientos": [],
-    "activo": true,
-    "estadoInicial": "PERDIDO_PROPIO",
-    "estadoCierre": "RECUPERADO",
-    "fechaInicial": "2025-11-14T17:15:00",
-    "fechaModificacion": "2025-11-14T17:15:00",
-    "ubicacion": {
-      "id": 1,
-      "ciudad": "dfgdg",
-      "barrio": "dfgdg",
-      "latitud": "-34.6037",
-      "longitud": "-58.3816"
-    },
-    "descripcion": "Mascota perdida cerca del parque."
-  }
-]
-*/
 @Injectable({ providedIn: 'root' })
 export class PublicacionService {
   private apiUrl = 'http://localhost:8080/publicacion';
@@ -42,8 +12,7 @@ export class PublicacionService {
     return this.http.get<Publicacion[]>(this.apiUrl).pipe(
       catchError(error => {
         console.error('Error fetching Publicacions:', error);
-        return of([]); // no propaga el error
-        //return throwError(() => error); // propaga el error
+        return of([]);
       })
     );
   }
