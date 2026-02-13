@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 
 export interface LoginRequest {
@@ -23,6 +23,10 @@ export class AuthService {
   private apiUrl = 'http://localhost:8080/auth';
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'current_user';
+  
+  // Subject para notificar cambios en los datos del usuario
+  private userUpdated$ = new BehaviorSubject<LoginResponse | null>(this.getCurrentUser());
+  public userUpdates$ = this.userUpdated$.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -41,6 +45,8 @@ export class AuthService {
           // Guardar token y datos del usuario en localStorage
           localStorage.setItem(this.TOKEN_KEY, response.token);
           localStorage.setItem(this.USER_KEY, JSON.stringify(response));
+          // Emitir el cambio para que los componentes suscritos se actualicen
+          this.userUpdated$.next(response);
         })
       );
   }
@@ -51,6 +57,8 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
+    // Emitir null para indicar que no hay usuario
+    this.userUpdated$.next(null);
     this.router.navigate(['/home']);
   }
 
@@ -93,6 +101,8 @@ export class AuthService {
     if (user) {
       user.nombre = nombre;
       localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+      // Emitir el cambio para que los componentes suscritos se actualicen
+      this.userUpdated$.next(user);
     }
   }
 

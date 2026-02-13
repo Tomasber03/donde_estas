@@ -18,6 +18,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   showUserMenu: boolean = false;
   notification: Notification | null = null;
   private notificationSubscription?: Subscription;
+  private userUpdateSubscription?: Subscription;
   currentRoute: string = '';
 
   constructor(
@@ -42,11 +43,26 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.notification = notification;
       this.cdr.detectChanges();
     });
+    
+    // Suscribirse a actualizaciones del usuario
+    this.userUpdateSubscription = this.authService.userUpdates$.subscribe(user => {
+      if (user) {
+        this.userName = user.nombre || 'Usuario';
+        this.isAuthenticated = true;
+      } else {
+        this.userName = '';
+        this.isAuthenticated = false;
+      }
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnDestroy() {
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();
+    }
+    if (this.userUpdateSubscription) {
+      this.userUpdateSubscription.unsubscribe();
     }
     this.updateCurrentRoute();
     

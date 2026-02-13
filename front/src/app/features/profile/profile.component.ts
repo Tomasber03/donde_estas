@@ -117,7 +117,7 @@ export class ProfileComponent implements OnInit {
     fileInput.click();
   }
 
-  ssaveProfile() {
+  saveProfile() {
   const currentUser = this.authService.getCurrentUser();
   if (!currentUser || !currentUser.userId) {
     this.errorMessage = 'No se pudo identificar el usuario';
