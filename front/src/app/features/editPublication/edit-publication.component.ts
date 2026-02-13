@@ -17,7 +17,6 @@ export class EditPublicationComponent implements OnInit, AfterViewInit, OnDestro
   descripcion: string = '';
   loading = false;
   
-  // Ubicación
   ubicacion = {
     ciudad: '',
     barrio: '',
@@ -25,7 +24,6 @@ export class EditPublicationComponent implements OnInit, AfterViewInit, OnDestro
     longitud: ''
   };
   
-  // Mapa
   private map: L.Map | null = null;
   private marker: L.Marker | null = null;
 
@@ -45,7 +43,6 @@ export class EditPublicationComponent implements OnInit, AfterViewInit, OnDestro
   }
   
   ngAfterViewInit(): void {
-    // El mapa se inicializará después de cargar la publicación
   }
   
   ngOnDestroy(): void {
@@ -59,7 +56,6 @@ export class EditPublicationComponent implements OnInit, AfterViewInit, OnDestro
 
     this.publicacionService.getPublicacion(this.publicacionId).subscribe({
       next: (data: any) => {
-        // Verificar que sea del usuario actual
         const currentUser = this.authService.getCurrentUser();
         if (!currentUser || data.usuarioId !== currentUser.userId) {
           alert('No tienes permiso para editar esta publicación');
@@ -69,7 +65,6 @@ export class EditPublicationComponent implements OnInit, AfterViewInit, OnDestro
 
         this.descripcion = data.descripcion;
         
-        // Cargar ubicación
         if (data.ubicacion) {
           this.ubicacion = {
             ciudad: data.ubicacion.ciudad || '',
@@ -79,7 +74,6 @@ export class EditPublicationComponent implements OnInit, AfterViewInit, OnDestro
           };
         }
         
-        // Inicializar mapa después de cargar datos
         setTimeout(() => {
           this.initMap();
         }, 100);
@@ -106,12 +100,10 @@ export class EditPublicationComponent implements OnInit, AfterViewInit, OnDestro
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
 
-    // Agregar marcador inicial
     this.marker = L.marker([lat, lng], {
       draggable: true
     }).addTo(this.map);
 
-    // Actualizar ubicación cuando se mueve el marcador
     this.marker.on('dragend', () => {
       if (this.marker) {
         const position = this.marker.getLatLng();
@@ -119,7 +111,6 @@ export class EditPublicationComponent implements OnInit, AfterViewInit, OnDestro
       }
     });
 
-    // Actualizar ubicación cuando se hace clic en el mapa
     this.map.on('click', (e: L.LeafletMouseEvent) => {
       this.updateLocation(e.latlng.lat, e.latlng.lng);
       if (this.marker) {
@@ -132,7 +123,6 @@ export class EditPublicationComponent implements OnInit, AfterViewInit, OnDestro
     this.ubicacion.latitud = lat.toFixed(6);
     this.ubicacion.longitud = lng.toFixed(6);
 
-    // Geocodificación inversa usando Nominatim
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
       .then(response => response.json())
       .then(data => {

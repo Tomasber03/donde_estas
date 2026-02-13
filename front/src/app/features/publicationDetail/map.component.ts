@@ -90,7 +90,6 @@ export class MapComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
-    // Es buena práctica destruir el mapa al salir para liberar memoria
     if (this.map) {
       this.map.remove();
     }
@@ -103,11 +102,9 @@ export class MapComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   private initMap(): void {
-    // Convertir a número por seguridad (tu modelo los tiene como string)
     const latNum = typeof this.lat === 'string' ? parseFloat(this.lat) : this.lat;
     const lngNum = typeof this.lng === 'string' ? parseFloat(this.lng) : this.lng;
 
-    // Verificar que las coordenadas sean válidas
     if (isNaN(latNum) || isNaN(lngNum)) {
       console.error('Coordenadas inválidas para el mapa');
       return;
@@ -125,7 +122,6 @@ export class MapComponent implements AfterViewInit, OnDestroy, OnChanges {
 
     tiles.addTo(this.map);
 
-    // Agregar marcador de la publicación con icono azul
     const blueIcon = L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
       shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
@@ -139,18 +135,13 @@ export class MapComponent implements AfterViewInit, OnDestroy, OnChanges {
       .bindPopup('<b>Ubicación de la publicación</b><br>Aquí se reportó la mascota')
       .openPopup();
 
-    // Agregar marcadores de avistamientos
     this.addSightingMarkers();
 
-    // Ajustar el zoom para mostrar todos los marcadores
     this.fitMapBounds();
   }
 
   private addSightingMarkers(): void {
-    console.log('Agregando marcadores de avistamientos:', this.avistamientos);
-    
     if (!this.map || !this.avistamientos || this.avistamientos.length === 0) {
-      console.log('No hay avistamientos para mostrar');
       return;
     }
 
@@ -164,13 +155,9 @@ export class MapComponent implements AfterViewInit, OnDestroy, OnChanges {
     });
 
     this.avistamientos.forEach((avistamiento, index) => {
-      console.log(`Procesando avistamiento ${index + 1}:`, avistamiento);
-      
       if (avistamiento.ubicacion && avistamiento.ubicacion.latitud && avistamiento.ubicacion.longitud) {
         const lat = parseFloat(avistamiento.ubicacion.latitud);
         const lng = parseFloat(avistamiento.ubicacion.longitud);
-
-        console.log(`Coordenadas del avistamiento ${index + 1}: lat=${lat}, lng=${lng}`);
 
         if (!isNaN(lat) && !isNaN(lng)) {
           const fecha = new Date(avistamiento.fechaCreacion).toLocaleDateString('es-ES');
@@ -187,26 +174,21 @@ export class MapComponent implements AfterViewInit, OnDestroy, OnChanges {
             .addTo(this.map!)
             .bindPopup(popupContent);
           
-          // Agregar evento de clic al marcador
           marker.on('click', () => {
             if (avistamiento.id) {
               this.avistamientoClick.emit(avistamiento.id);
             }
           });
-            
-          console.log(`✓ Marcador agregado para avistamiento ${index + 1}`);
         } else {
-          console.log(`✗ Coordenadas inválidas para avistamiento ${index + 1}`);
+          console.error(`Coordenadas inválidas para avistamiento ${index + 1}`);
         }
       } else {
-        console.log(`✗ Sin ubicación para avistamiento ${index + 1}`);
+        console.error(`Sin ubicación para avistamiento ${index + 1}`);
       }
     });
   }
 
   private updateMarkers(): void {
-    // Limpiar marcadores existentes excepto el de la publicación
-    // y volver a agregar los de avistamientos
     if (this.map) {
       this.addSightingMarkers();
       this.fitMapBounds();
@@ -221,7 +203,6 @@ export class MapComponent implements AfterViewInit, OnDestroy, OnChanges {
 
     const bounds: L.LatLngBoundsExpression = [[latNum, lngNum]];
 
-    // Agregar coordenadas de avistamientos
     this.avistamientos.forEach(avistamiento => {
       if (avistamiento.ubicacion && avistamiento.ubicacion.latitud && avistamiento.ubicacion.longitud) {
         const lat = parseFloat(avistamiento.ubicacion.latitud);
@@ -232,13 +213,11 @@ export class MapComponent implements AfterViewInit, OnDestroy, OnChanges {
       }
     });
 
-    // Ajustar el mapa para mostrar todos los marcadores
     if (bounds.length > 1) {
       this.map.fitBounds(bounds, { padding: [50, 50] });
     }
   }
 
-  // Solución para que aparezcan los iconos correctamente en Angular
   private fixLeafletIcons() {
     const iconRetinaUrl = 'assets/marker-icon-2x.png';
     const iconUrl = 'assets/marker-icon.png';

@@ -49,11 +49,11 @@
     <!-- Sección de Ubicación (Mapa) -->
     <div class="form-section">
       <h2 class="section-title">Ubicación del Avistamiento</h2>
-      <app-editable-map 
+      <app-map-selector 
         [initialLat]="mapLat" 
         [initialLng]="mapLng"
         (locationSelected)="onLocationSelected($event)">
-      </app-editable-map>
+      </app-map-selector>
       <p class="location-hint" *ngIf="!ubicacion">
         ⚠️ Debes marcar una ubicación en el mapa
       </p>

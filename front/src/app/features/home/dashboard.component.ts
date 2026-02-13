@@ -19,26 +19,21 @@ export class DashboardComponent implements OnInit {
   selectedTab: string = 'Todos';
   publicaciones: Publicacion[] = [];
   countForTab = {PERDIDO_PROPIO: 0, PERDIDO_AJENO: 0, RECUPERADO: 0, ADOPTADO: 0};
-  // Datos simulados basados en la imagen
   constructor (private cdr: ChangeDetectorRef, private router: Router, private userService: UserService, private publicacionService: PublicacionService) {}
   ngOnInit(): void {
     this.publicacionService.getPublicacions().subscribe({
       next: (data: any) => {
         this.publicaciones = data;
         
-        // Reiniciar contadores por seguridad si se llegara a llamar más de una vez
         this.countForTab = { PERDIDO_PROPIO: 0, PERDIDO_AJENO: 0, RECUPERADO: 0, ADOPTADO: 0 };
 
-        // Calcular contadores
         for (let pub of this.publicaciones) {
-          // Para publicaciones activas, contar según estadoInicial
           if (pub.activo) {
              const estadoKey = pub.estadoInicial as keyof typeof this.countForTab;
              if (this.countForTab[estadoKey] !== undefined) {
                  this.countForTab[estadoKey]++;
              }
           } else {
-             // Para publicaciones inactivas (cerradas), contar según estadoCierre
              if (pub.estadoCierre) {
                const estadoKey = pub.estadoCierre as keyof typeof this.countForTab;
                if (this.countForTab[estadoKey] !== undefined) {
@@ -59,7 +54,6 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  // Método auxiliar para refrescar la visualización de las pestañas
   updateTabsArray() {
     this.tabs = [
       { label: 'Todos', count: this.publicaciones.length },
@@ -113,23 +107,17 @@ export class DashboardComponent implements OnInit {
   }
 
   filterByStatus(status: string): void {
-  // 1. Si es 'Todos', no filtramos nada (dejar la lista como está)
   if (status === 'Todos') {
     return;
   }
 
-  // 2. Normalizamos el status del TAB (ej: "Perdido Propio" -> "perdido propio")
-  // Usamos replaceAll por si acaso hubiera más de un guion bajo
   const estadoBuscado = status.toLowerCase().replaceAll("_", " ").trim();
 
   this.filteredPetsList = this.filteredPetsList.filter(publicacion => {
-    // 3. Determinar qué campo mirar
     const estadoActual = publicacion.activo 
         ? publicacion.estadoInicial 
         : publicacion.estadoCierre;
 
-    // 4. Normalizamos el estado de la PUBLICACION (ej: "PERDIDO_PROPIO" -> "perdido propio")
-    // Verificamos que no sea null/undefined para evitar errores
     if (!estadoActual) return false;
 
     const estadoNormalizado = estadoActual.toLowerCase().replaceAll("_", " ").trim();

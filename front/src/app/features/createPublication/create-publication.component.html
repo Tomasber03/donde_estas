@@ -231,9 +231,10 @@
           </button>
 
           <div *ngIf="showMap" class="mb-4">
-            <app-interactive-map 
+            <app-map-selector 
+              [enableGeocoding]="true"
               (locationSelected)="onLocationSelected($event)">
-            </app-interactive-map>
+            </app-map-selector>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

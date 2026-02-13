@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { MascotaService, Mascota } from '../../services/mascota.service';
+import { MascotaService } from '../../services/mascota.service';
+import { Mascota } from '../models.model';
 import { AuthService } from '../../services/auth.service';
 import { PublicacionService } from '../../services/PublicactionService.service';
 import { forkJoin } from 'rxjs';
@@ -62,7 +63,6 @@ export class CarouselComponent implements OnInit {
         next: ({ mascotas, publicaciones }) => {
           this.mascotas = mascotas;
           
-          // Crear mapa de mascotaId -> publicacionId
           publicaciones.forEach(pub => {
             if (pub.mascota && pub.mascota.id && pub.activo) {
               this.mascotaPublicacionMap.set(pub.mascota.id, pub.id);

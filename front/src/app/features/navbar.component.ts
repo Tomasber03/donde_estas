@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -18,6 +18,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   showUserMenu: boolean = false;
   notification: Notification | null = null;
   private notificationSubscription?: Subscription;
+  private userUpdateSubscription?: Subscription;
+  private routerSubscription?: Subscription;
   currentRoute: string = '';
 
   constructor(
@@ -45,25 +47,55 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
   
   ngOnInit() {
+    console.log('NavbarComponent ngOnInit - Verificando autenticación');
     this.checkAuthentication();
+    
     this.notificationSubscription = this.notificationService.notification$.subscribe(notification => {
       this.notification = notification;
       this.cdr.detectChanges();
     });
-  }
-
-  ngOnDestroy() {
-    if (this.notificationSubscription) {
-      this.notificationSubscription.unsubscribe();
-    }
-    this.updateCurrentRoute();
     
-    // Escuchar cambios de ruta
-    this.router.events.pipe(
+    this.userUpdateSubscription = this.authService.userUpdates$.subscribe(user => {
+      if (user) {
+        this.userName = user.nombre || 'Usuario';
+        this.isAuthenticated = true;
+      } else {
+        this.userName = '';
+        this.isAuthenticated = false;
+      }
+      this.cdr.detectChanges();
+    });
+    
+    if (this.authService.isAuthenticated() && !this.authService.getCurrentUser()) {
+      this.authService.loadCurrentUser().subscribe({
+        error: (err) => console.error('Error al cargar usuario:', err)
+      });
+    }
+    
+    this.routerSubscription = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.updateCurrentRoute();
     });
+    
+    this.updateCurrentRoute();
+  }
+@HostListener('window:focus')
+  onWindowFocus(): void {
+    this.authService.refreshCurrentUser().subscribe({
+      error: (err) => console.error('Error al refrescar usuario:', err)
+    });
+  }
+  ngOnDestroy() {
+    if (this.notificationSubscription) {
+      this.notificationSubscription.unsubscribe();
+    }
+    if (this.userUpdateSubscription) {
+      this.userUpdateSubscription.unsubscribe();
+    }
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
   
   updateCurrentRoute() {
@@ -79,7 +111,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.isAuthenticated) {
       const user = this.authService.getCurrentUser();
       this.userName = user?.nombre || 'Usuario';
+      console.log('Usuario autenticado:', this.userName);
     }
+
   }
 
   toggleUserMenu() {

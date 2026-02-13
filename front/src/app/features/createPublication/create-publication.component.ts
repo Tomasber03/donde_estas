@@ -2,17 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { InteractiveMapComponent, MapLocation } from './interactive-map.component';
+import { MapSelectorComponent, MapLocation } from '../../shared/map-selector/map-selector.component';
 import { PublicacionService } from '../../services/PublicactionService.service';
 import { AuthService } from '../../services/auth.service';
-import { MascotaService, Mascota } from '../../services/mascota.service';
+import { MascotaService } from '../../services/mascota.service';
+import { Mascota } from '../models.model';
 import { ChangeDetectorRef } from '@angular/core';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-create-publication',
   standalone: true,
-  imports: [CommonModule, FormsModule, InteractiveMapComponent],
+  imports: [CommonModule, FormsModule, MapSelectorComponent],
   templateUrl: './create-publication.component.html',
 })
 export class CreatePublicationComponent implements OnInit {
@@ -35,7 +36,6 @@ export class CreatePublicationComponent implements OnInit {
   showMap = false;
   isSubmitting = false;
   
-  // Nueva funcionalidad de mascotas
   usarMascotaExistente = false;
   mascotaSeleccionada: Mascota | null = null;
   mascotasDelUsuario: Mascota[] = [];
@@ -70,17 +70,14 @@ export class CreatePublicationComponent implements OnInit {
   }
 
   onCheckboxChange(): void {
-    // Limpiar selección si desmarca el checkbox
     if (!this.usarMascotaExistente) {
       this.mascotaSeleccionada = null;
-      // Limpiar también los campos del formulario
       this.formData.nombreMascota = '';
       this.formData.especieMascota = '';
       this.formData.razaMascota = '';
       this.formData.colorMascota = '';
       this.formData.tamanioMascota = '';
     } else {
-      // Si marca el checkbox para usar mascota existente, limpiar las fotos
       this.fotosSeleccionadas = [];
       this.previewUrls = [];
     }
@@ -90,8 +87,6 @@ export class CreatePublicationComponent implements OnInit {
     const mascotaId = parseInt(event.target.value);
     this.mascotaSeleccionada = this.mascotasDelUsuario.find(m => m.id === mascotaId) || null;
     
-    // No llenar el formulario, solo guardar la referencia
-    // La mascota existente ya tiene sus datos en el backend
   }
 
   onFileSelected(event: any): void {
@@ -102,7 +97,6 @@ export class CreatePublicationComponent implements OnInit {
       if (file.type.startsWith('image/')) {
         this.fotosSeleccionadas.push(file);
         
-        // Crear preview
         const reader = new FileReader();
         reader.onload = (e: any) => {
           this.previewUrls.push(e.target.result);
@@ -138,22 +132,18 @@ export class CreatePublicationComponent implements OnInit {
   onSubmit() {
     if (this.isSubmitting) return;
 
-    // Validaciones básicas
     if (!this.formData.descripcion || !this.formData.estadoInicial) {
       alert('Por favor completa los campos obligatorios: Descripción y Tipo de reporte');
       return;
     }
 
-    // Validar mascota según el modo
     if (this.formData.estadoInicial === 'PERDIDO_PROPIO') {
       if (this.usarMascotaExistente) {
-        // Modo: mascota existente - solo validar que se haya seleccionado una
         if (!this.mascotaSeleccionada) {
           alert('Por favor selecciona una de tus mascotas de la lista');
           return;
         }
       } else {
-        // Modo: nueva mascota - validar campos de mascota y fotos
         if (!this.formData.nombreMascota || this.formData.nombreMascota.trim() === '') {
           alert('El nombre de la mascota es obligatorio');
           return;
@@ -164,7 +154,6 @@ export class CreatePublicationComponent implements OnInit {
         }
       }
     } else {
-      // PERDIDO_AJENO - siempre requiere datos de nueva mascota y fotos
       if (!this.formData.nombreMascota || this.formData.nombreMascota.trim() === '') {
         alert('El nombre de la mascota es obligatorio');
         return;
@@ -180,7 +169,6 @@ export class CreatePublicationComponent implements OnInit {
       return;
     }
 
-    // Si ciudad o barrio están vacíos, usar valores por defecto
     if (!this.formData.ciudad || this.formData.ciudad.trim() === '') {
       this.formData.ciudad = 'No especificada';
     }
@@ -188,7 +176,6 @@ export class CreatePublicationComponent implements OnInit {
       this.formData.barrio = 'No especificado';
     }
 
-    // Obtener el usuario actual
     const currentUser = this.authService.getCurrentUser();
     console.log('Current User:', currentUser);
     
@@ -201,16 +188,13 @@ export class CreatePublicationComponent implements OnInit {
     console.log('User ID:', currentUser.userId);
     this.isSubmitting = true;
 
-    // Determinar si usar mascota existente o crear una nueva
     let mascotaDTO: any;
     
     if (this.usarMascotaExistente && this.mascotaSeleccionada) {
-      // Usar mascota existente (enviar ID solamente)
       mascotaDTO = {
         id: this.mascotaSeleccionada.id
       };
     } else {
-      // Crear nueva mascota con fotos
       mascotaDTO = {
         nombre: this.formData.nombreMascota.trim(),
         raza: this.formData.razaMascota?.trim() || 'Sin especificar',
@@ -221,7 +205,6 @@ export class CreatePublicationComponent implements OnInit {
 };
     }
 
-    // Convertir fotos a Base64
     const fotosPromises = this.fotosSeleccionadas.map((file, index) => {
       return new Promise<{nombre: string, url: string}>((resolve) => {
         const reader = new FileReader();
@@ -260,7 +243,6 @@ export class CreatePublicationComponent implements OnInit {
           console.log('✅ Publicación creada exitosamente:', response);
           this.isSubmitting = false;
           
-          // Mostrar notificación global y redirigir inmediatamente
           this.notificationService.showSuccess('¡Publicación creada exitosamente!');
           this.router.navigate(['/home']);
         },
