@@ -18,6 +18,9 @@ export class DetallePublicacionComponent implements OnInit {
   loading = true;
   usuarioContacto: UsuarioContacto | null = null;
   esPropia = false;
+  
+  // Carrusel de fotos
+  fotoActualIndex = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -203,5 +206,26 @@ export class DetallePublicacionComponent implements OnInit {
       case 'ADOPTADO': return 'bg-blue-600';
       default: return 'bg-gray-600';
     }
+  }
+  
+  // Métodos para el carrusel de fotos
+  get totalFotos(): number {
+    return this.publicacion?.mascota?.fotos?.length || 0;
+  }
+  
+  siguienteFoto(): void {
+    if (this.publicacion && this.publicacion.mascota.fotos) {
+      this.fotoActualIndex = (this.fotoActualIndex + 1) % this.publicacion.mascota.fotos.length;
+    }
+  }
+  
+  anteriorFoto(): void {
+    if (this.publicacion && this.publicacion.mascota.fotos) {
+      this.fotoActualIndex = (this.fotoActualIndex - 1 + this.publicacion.mascota.fotos.length) % this.publicacion.mascota.fotos.length;
+    }
+  }
+  
+  irAFoto(index: number): void {
+    this.fotoActualIndex = index;
   }
 }
