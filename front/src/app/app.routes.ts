@@ -10,7 +10,9 @@ import { EditarMascotaComponent } from './features/editarMascota/editar-mascota.
 import { AvistamientoComponent } from './features/avistamiento/avistamiento.component';
 import { DetalleAvistamientoComponent } from './features/avistamiento/detalleAvistamiento.component';
 import { MisPublicacionesComponent } from './features/misPublicaciones/mis-publicaciones.component';
+import { AdminPanelComponent } from './features/admin/admin-panel.component';
 import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -19,6 +21,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'mis-reportes', component: MisPublicacionesComponent, canActivate: [authGuard] },
+  { path: 'admin', component: AdminPanelComponent, canActivate: [adminGuard] },
   { path: 'publicacion/:id', component: DetallePublicacionComponent },
   { path: 'crear-publicacion', component: CreatePublicationComponent, canActivate: [authGuard] },
   { path: 'editar-publicacion/:id', component: EditPublicationComponent, canActivate: [authGuard] },

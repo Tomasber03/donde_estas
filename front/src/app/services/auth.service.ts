@@ -13,6 +13,7 @@ export interface LoginResponse {
   userId: number;
   email: string;
   nombre: string;
+  rol: string;
   expiresIn: number;
 }
 
@@ -90,5 +91,13 @@ export class AuthService {
    */
   validateToken(): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/validate`);
+  }
+
+  /**
+   * Verifica si el usuario actual es administrador
+   */
+  isAdmin(): boolean {
+    const user = this.getCurrentUser();
+    return user?.rol === 'ADMIN';
   }
 }

@@ -32,6 +32,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
     { label: 'Reportar Mascota', route: '/crear-publicacion' },
     { label: 'Mis Reportes', route: '/mis-reportes' },
   ];
+  
+  get navItemsWithAdmin() {
+    const items = [...this.navItems];
+    if (this.authService.isAdmin()) {
+      items.push({ label: 'Panel Admin', route: '/admin' });
+    }
+    return items;
+  }
   redirectHome() {
     this.router.navigate(['/']);
   }
@@ -84,7 +92,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   handleNavClick(label: string) {
     console.log('handleNavClick llamado con:', label);
-    const item = this.navItems.find(i => i.label === label);
+    const item = this.navItemsWithAdmin.find(i => i.label === label);
     console.log('Item encontrado:', item);
     if (item) {
       console.log('Navegando a:', item.route);

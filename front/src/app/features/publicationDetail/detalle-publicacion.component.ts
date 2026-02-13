@@ -18,6 +18,7 @@ export class DetallePublicacionComponent implements OnInit {
   loading = true;
   usuarioContacto: UsuarioContacto | null = null;
   esPropia = false;
+  esAdmin = false;
   
   // Carrusel de fotos
   fotoActualIndex = 0;
@@ -46,10 +47,11 @@ export class DetallePublicacionComponent implements OnInit {
       next: (data: any) => {
         this.publicacion = data;
         
-        // Verificar si la publicación es del usuario actual
+        // Verificar si la publicación es del usuario actual o si es admin
         const currentUser = this.authService.getCurrentUser();
         if (currentUser && this.publicacion) {
           this.esPropia = this.publicacion.usuarioId === currentUser.userId;
+          this.esAdmin = this.authService.isAdmin();
         }
         
         if (this.publicacion && this.publicacion.usuarioId) {
