@@ -105,8 +105,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.userName = user?.nombre || 'Usuario';
       console.log('Usuario autenticado:', this.userName);
     }
-    else
-      console.log('furry facto');
 
   }
 

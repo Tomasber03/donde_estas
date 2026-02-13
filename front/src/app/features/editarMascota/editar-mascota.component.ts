@@ -72,7 +72,10 @@ export class EditarMascotaComponent implements OnInit {
         fotosFinales.push({ ...foto });
       }
     }
-
+    if (fotosFinales.length + this.fotosNuevas.length === 0) {
+      alert('Debe agregar al menos una foto de la mascota');
+      return;
+    }
     const convertirFotosNuevas = this.fotosNuevas.map((file) => {
       return new Promise<Foto>((resolve) => {
         const reader = new FileReader();

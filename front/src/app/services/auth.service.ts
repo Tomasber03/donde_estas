@@ -34,7 +34,7 @@ export class AuthService {
 
   private setCookie(name: string, value: string, minutes: number): void {
     const date = new Date();
-    date.setTime(date.getTime() + (10000));
+    date.setTime(date.getTime() + (minutes * 60 * 10000));
     const expires = `expires=${date.toUTCString()}`;
     const isProduction = location.protocol === 'https:';
     const secureFlag = isProduction ? ';Secure' : '';
@@ -79,10 +79,6 @@ export class AuthService {
     this.router.navigate(['/home']);
   }
 
-  borrarCacheUsuario(): void {
-    this.userCache = null;
-    this.userUpdated$.next(null);
-  } 
   getToken(): string | null {
     return this.getCookie(this.TOKEN_KEY);
   }
