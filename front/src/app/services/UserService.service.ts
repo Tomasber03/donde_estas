@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-export interface User {id: number; nombre: string; apellido: string; clave: string; email: string; telefono: string; barrio: string; ciudad: string; rolPersistido: string;}
+export interface User {id: number; nombre: string; apellido: string; clave: string; email: string; telefono: string; barrio: string; ciudad: string; rol_id: number;}
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private apiUrl = 'http://localhost:8080/user';

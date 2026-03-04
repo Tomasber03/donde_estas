@@ -2,8 +2,6 @@ package org.example.donde_estas.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.example.donde_estas.model.Enum.RolPersistido;
-import org.example.donde_estas.model.Rol;
 import org.example.donde_estas.model.Mascota;
 import org.example.donde_estas.repository.MascotaRepository;
 import org.springframework.beans.factory.annotation.Autowired;

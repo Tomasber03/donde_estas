@@ -1,11 +1,9 @@
 package org.example.donde_estas.dto.usuario;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.donde_estas.model.Enum.RolPersistido;
 
 @Getter
 @Setter
@@ -31,7 +29,4 @@ public class UsuarioNuevoDTO {
 
     @NotBlank(message = "La ciudad es obligatoria")
     private String ciudad;
-
-    @NotNull(message = "El rol es obligatorio")
-    private RolPersistido rolPersistido;
 }

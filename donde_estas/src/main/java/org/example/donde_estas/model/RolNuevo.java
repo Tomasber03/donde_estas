@@ -20,4 +20,5 @@ public class RolNuevo {
             inverseJoinColumns = @JoinColumn(name = "permiso_id")
     )
     private List<Permiso> permisos;
+
 }

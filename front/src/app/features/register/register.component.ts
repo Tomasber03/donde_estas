@@ -19,7 +19,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 export class RegisterComponent {
   private router = inject(Router);
-  form: Partial<User> = { nombre: '', apellido: '', clave: '', email: '', telefono: '', barrio: '', ciudad: '', rolPersistido: 'USUARIOPUBLICO' };
+  form: Partial<User> = { nombre: '', apellido: '', clave: '', email: '', telefono: '', barrio: '', ciudad: ''};
   errorMessage = '';
   constructor(private service: UserService, private cdr: ChangeDetectorRef) {
   }

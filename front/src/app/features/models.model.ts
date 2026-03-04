@@ -17,7 +17,7 @@ export interface Foto {
     descripcion?: string;
     fechaCreacion?: string;
 }
-export interface UsuarioContacto { id: number; nombre: string; apellido: string; email: string; telefono: string; barrio: string; ciudad: string; puntos:number; rolPersistido: string;}
+export interface UsuarioContacto { id: number; nombre: string; apellido: string; email: string; telefono: string; barrio: string; ciudad: string; puntos:number;}
 export interface Ubicacion {
     barrio: string;
     ciudad: string;

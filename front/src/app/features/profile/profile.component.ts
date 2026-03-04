@@ -114,7 +114,7 @@ export class ProfileComponent implements OnInit {
     ciudad: this.editingUser.ciudad || '',
     barrio: this.editingUser.barrio || '',
     clave: this.user.email || '', // No se actualiza en backend, pero se envía el actual
-    rolPersistido: 'USUARIOPUBLICO' // Valor por defecto
+    rol_id: 1 // No se actualiza en backend, pero se envía el actual
   };
 
   this.userService.updateUser(updatedUser).subscribe({

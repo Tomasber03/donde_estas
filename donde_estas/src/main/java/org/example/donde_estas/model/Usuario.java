@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.donde_estas.dto.usuario.UsuarioNuevoDTO;
-import org.example.donde_estas.model.Enum.RolPersistido;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,14 +44,8 @@ public class Usuario {
     @NotBlank(message = "La ciudad es obligatoria")
     private String ciudad;
 
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "El rol es obligatorio")
-    private RolPersistido rolPersistido;
-
     private int puntos;
 
-    @Transient
-    private Rol rol;
     @JoinColumn(name = "rol_id")
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private RolNuevo rolNuevo;
@@ -81,15 +74,12 @@ public class Usuario {
         this.telefono = dto.getTelefono();
         this.barrio = dto.getBarrio();
         this.ciudad = dto.getCiudad();
-        this.rol = new UsuarioPublico();
         this.puntos = 0;
         this.publicaciones = new ArrayList<>();
-        this.rolPersistido = dto.getRolPersistido();
     }
 
     public Usuario() {
         puntos = 0;
-
     }
 
     public void agregarPublicacion(Publicacion pub){
@@ -107,7 +97,6 @@ public class Usuario {
                 ", telefono='" + telefono + '\'' +
                 ", barrio='" + barrio + '\'' +
                 ", ciudad='" + ciudad + '\'' +
-                ", rolPersistido=" + rolPersistido +
                 ", puntos=" + puntos +
                 '}';
     }
